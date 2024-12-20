@@ -1,13 +1,24 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { VoiceProvider } from "@/contexts/VoiceContext";
+import { VoiceIndicator } from "@/components/VoiceIndicator";
+import { QuizGame } from "@/components/QuizGame";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <VoiceProvider>
+      <div className="min-h-screen bg-gray-50 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold text-center mb-2 text-primary">
+            Voice Learning Game
+          </h1>
+          <p className="text-center mb-8 text-gray-600">
+            Speak your answers to play the quiz!
+          </p>
+          
+          <QuizGame />
+          <VoiceIndicator />
+        </div>
       </div>
-    </div>
+    </VoiceProvider>
   );
 };
 
