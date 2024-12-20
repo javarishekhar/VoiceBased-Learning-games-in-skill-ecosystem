@@ -11,6 +11,13 @@ interface VoiceContextType {
 
 const VoiceContext = createContext<VoiceContextType | undefined>(undefined);
 
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 export function VoiceProvider({ children }: { children: React.ReactNode }) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
