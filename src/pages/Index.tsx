@@ -9,10 +9,34 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const games = [
-  { id: "quiz", title: "Knowledge Quiz", component: QuizGame },
-  { id: "coding", title: "Voice Coding", component: CodingGame },
-  { id: "carpentry", title: "Carpentry Training", component: CarpentryGame },
-  { id: "firstaid", title: "First Aid Training", component: FirstAidGame },
+  { 
+    id: "quiz", 
+    title: "Knowledge Quiz", 
+    component: QuizGame,
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+    description: "Test your knowledge with voice-controlled questions"
+  },
+  { 
+    id: "coding", 
+    title: "Voice Coding", 
+    component: CodingGame,
+    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    description: "Learn coding through voice commands"
+  },
+  { 
+    id: "carpentry", 
+    title: "Carpentry Training", 
+    component: CarpentryGame,
+    image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+    description: "Master carpentry skills step by step"
+  },
+  { 
+    id: "firstaid", 
+    title: "First Aid Training", 
+    component: FirstAidGame,
+    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
+    description: "Learn life-saving first aid procedures"
+  },
 ];
 
 const Index = () => {
@@ -25,7 +49,7 @@ const Index = () => {
   return (
     <VoiceProvider>
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-2 text-primary">
             Voice Learning Games
           </h1>
@@ -34,15 +58,22 @@ const Index = () => {
           </p>
 
           {!selectedGame ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {games.map((game) => (
                 <Card 
                   key={game.id}
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white/80 backdrop-blur"
+                  className="group p-6 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur transform hover:-translate-y-1"
                   onClick={() => setSelectedGame(game.id)}
                 >
+                  <div className="aspect-video mb-4 overflow-hidden rounded-lg">
+                    <img 
+                      src={game.image} 
+                      alt={game.title}
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                   <h2 className="text-2xl font-semibold mb-2 text-primary">{game.title}</h2>
-                  <p className="text-gray-600">Click to start learning!</p>
+                  <p className="text-gray-600">{game.description}</p>
                 </Card>
               ))}
             </div>
@@ -50,7 +81,7 @@ const Index = () => {
             <div>
               <Button 
                 onClick={() => setSelectedGame(null)}
-                className="mb-6"
+                className="mb-6 hover:bg-primary/90"
               >
                 ← Back to Games
               </Button>
