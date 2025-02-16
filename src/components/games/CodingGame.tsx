@@ -11,6 +11,7 @@ export function CodingGame() {
   const [output, setOutput] = useState("");
   const [showExplanation, setShowExplanation] = useState(false);
   const [showCodeDetails, setShowCodeDetails] = useState(false);
+  const [previewContent, setPreviewContent] = useState("");
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
 
@@ -91,15 +92,54 @@ console.log("${message}"); // Outputs: ${message}\n`;
     try {
       console.group("Code Execution Results");
       console.log("Executing code:\n", code);
-      // Using Function constructor to safely evaluate code
+      
+      // Create a safe environment for code execution
+      const previewWindow = window.open("", "Preview", "width=600,height=400");
+      if (previewWindow) {
+        previewWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Code Preview</title>
+            </head>
+            <body>
+              <div id="output"></div>
+              <script>
+                // Redirect console.log to both preview and main window
+                const originalLog = console.log;
+                console.log = (...args) => {
+                  originalLog.apply(console, args);
+                  const output = document.getElementById('output');
+                  output.innerHTML += args.join(' ') + '<br>';
+                };
+                try {
+                  ${code}
+                } catch (error) {
+                  console.error('Error:', error);
+                }
+              </script>
+            </body>
+          </html>
+        `);
+        previewWindow.document.close();
+      } else {
+        toast({
+          title: "Warning",
+          description: "Please allow pop-ups to see the preview window",
+          variant: "destructive",
+        });
+      }
+      
+      // Execute in main window as well
       const result = new Function(code)();
       const consoleOutput = result !== undefined ? String(result) : "Code executed successfully";
       console.log("Execution output:", consoleOutput);
       console.groupEnd();
       setOutput(consoleOutput);
+      
       toast({
         title: "Code Executed",
-        description: "Check the browser console (F12) for detailed output",
+        description: "Check the preview window and browser console (F12) for output",
       });
     } catch (error) {
       console.error("Code execution error:", error);
@@ -210,7 +250,7 @@ console.log("${message}"); // Outputs: ${message}\n`;
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">Output</h3>
         <pre className="bg-gray-100 p-4 rounded-lg font-mono text-sm">
-          {output || "// Output will appear here...\n// Press 'Run Code' to see results in console (F12)"}
+          {output || "// Output will appear here...\n// Press 'Run Code' to see results in console (F12) and preview window"}
         </pre>
       </div>
 
