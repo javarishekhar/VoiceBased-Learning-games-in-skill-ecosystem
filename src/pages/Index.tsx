@@ -8,7 +8,7 @@ import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail } from "lucide-react";
 
 const games = [
   { 
@@ -45,35 +45,91 @@ const games = [
   },
 ];
 
-const Header = () => (
-  <header className="bg-white shadow-sm">
-    <nav className="max-w-6xl mx-auto px-4 py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Home className="w-6 h-6 text-primary" />
-          <span className="text-xl font-bold text-primary">VoiceLearning</span>
-        </div>
-        <div className="flex items-center space-x-6">
-          {games.map((game) => (
-            <div 
-              key={game.id}
-              className="flex items-center space-x-1 text-gray-600 hover:text-primary cursor-pointer"
-            >
-              <game.icon className="w-4 h-4" />
-              <span className="text-sm hidden md:inline">{game.title}</span>
+const Header = () => {
+  const [showProjectInfo, setShowProjectInfo] = useState(false);
+  const [showContact, setShowContact] = useState(false);
+
+  return (
+    <header className="bg-white shadow-sm">
+      <nav className="max-w-6xl mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Home className="w-6 h-6 text-primary" />
+            <span className="text-xl font-bold text-primary">VoiceLearning</span>
+          </div>
+          
+          <div className="flex items-center space-x-6">
+            <div className="relative">
+              <Button 
+                variant="ghost" 
+                className="flex items-center space-x-1"
+                onClick={() => {
+                  setShowProjectInfo(!showProjectInfo);
+                  setShowContact(false);
+                }}
+              >
+                <Info className="w-4 h-4" />
+                <span>About</span>
+              </Button>
+              
+              {showProjectInfo && (
+                <Card className="absolute top-full mt-2 right-0 w-96 p-4 z-50 shadow-lg">
+                  <h3 className="font-semibold mb-2">About Voice Learning Platform</h3>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Our platform revolutionizes learning through voice interaction, making education more accessible and engaging.
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Features include interactive quizzes, coding exercises, carpentry training, and first aid instruction - all controlled by voice commands.
+                  </p>
+                </Card>
+              )}
             </div>
-          ))}
+
+            <div className="relative">
+              <Button 
+                variant="ghost" 
+                className="flex items-center space-x-1"
+                onClick={() => {
+                  setShowContact(!showContact);
+                  setShowProjectInfo(false);
+                }}
+              >
+                <Mail className="w-4 h-4" />
+                <span>Contact</span>
+              </Button>
+              
+              {showContact && (
+                <Card className="absolute top-full mt-2 right-0 w-72 p-4 z-50 shadow-lg">
+                  <h3 className="font-semibold mb-2">Contact Us</h3>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <p>Javari Shekhar: javarishekhar@gmail.com</p>
+                    <p>A Vivekananda: vivekananda@gmail.com</p>
+                  </div>
+                </Card>
+              )}
+            </div>
+
+            {games.map((game) => (
+              <div 
+                key={game.id}
+                className="flex items-center space-x-1 text-gray-600 hover:text-primary cursor-pointer"
+              >
+                <game.icon className="w-4 h-4" />
+                <span className="text-sm hidden md:inline">{game.title}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </nav>
-  </header>
-);
+      </nav>
+    </header>
+  );
+};
 
 const Footer = () => (
   <footer className="bg-white border-t mt-auto">
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="text-center text-gray-600 text-sm">
-        <p>&copy; {new Date().getFullYear()} shekhar@built.com. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} All rights reserved to Javari Shekhar and A Vivekananda.</p>
       </div>
     </div>
   </footer>
