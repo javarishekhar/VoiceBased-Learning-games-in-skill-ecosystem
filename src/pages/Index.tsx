@@ -8,7 +8,7 @@ import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Navigation, Home, BookOpen, Tool, Heart } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home } from "lucide-react";
 
 const games = [
   { 
@@ -25,7 +25,7 @@ const games = [
     component: CodingGame,
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
     description: "Learn coding through voice commands",
-    icon: Navigation
+    icon: Code
   },
   { 
     id: "carpentry", 
@@ -33,7 +33,7 @@ const games = [
     component: CarpentryGame,
     image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
     description: "Master carpentry skills step by step",
-    icon: Tool
+    icon: Hammer
   },
   { 
     id: "firstaid", 
