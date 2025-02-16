@@ -4,12 +4,13 @@ import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Info } from "lucide-react";
+import { Info, PlayCircle, Code as CodeIcon } from "lucide-react";
 
 export function CodingGame() {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
   const [showExplanation, setShowExplanation] = useState(false);
+  const [showCodeDetails, setShowCodeDetails] = useState(false);
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
 
@@ -23,10 +24,15 @@ export function CodingGame() {
         const variableParts = command.match(/variable\s+(\w+)\s+equal\s+to\s+(\d+)/);
         if (variableParts) {
           const [_, varName, value] = variableParts;
-          const newCode = `// Creating a variable named ${varName} with value ${value}
-// Variables are containers for storing data values
-let ${varName} = ${value};\n`;
+          const newCode = `/* Variable Creation Explanation:
+   - Creating a variable named '${varName}'
+   - Initial value: ${value}
+   - Variables are containers for storing data that can be modified later
+   - Example usage: ${varName} can be used in calculations or displayed
+*/
+let ${varName} = ${value}; // Initializing ${varName} with value ${value}\n`;
           setCode(prev => prev + newCode);
+          console.log(`Created variable ${varName} with value ${value}`);
           setOutput(`Variable ${varName} created with value ${value}`);
           stopListening();
           toast({
@@ -40,12 +46,18 @@ let ${varName} = ${value};\n`;
         const funcParts = command.match(/function\s+(\w+)/);
         if (funcParts) {
           const [_, funcName] = funcParts;
-          const newCode = `// Creating a function named ${funcName}
-// Functions are reusable blocks of code that perform specific tasks
+          const newCode = `/* Function Creation Explanation:
+   - Creating a function named '${funcName}'
+   - Functions are reusable blocks of code
+   - They can accept parameters and return values
+   - Example usage: ${funcName}() to execute the function
+*/
 function ${funcName}() {
   // Function body - Add your code here
+  console.log("${funcName} function executed");
 }\n`;
           setCode(prev => prev + newCode);
+          console.log(`Created function ${funcName}`);
           setOutput(`Function ${funcName} created`);
           stopListening();
           toast({
@@ -57,10 +69,14 @@ function ${funcName}() {
       // Handle console.log
       else if (command.includes("print") || command.includes("log")) {
         const message = command.replace(/(print|log)/i, "").trim();
-        const newCode = `// Adding a console.log statement to display: ${message}
-// console.log is used to output content to the console
-console.log("${message}");\n`;
+        const newCode = `/* Console Output Explanation:
+   - Using console.log to display: "${message}"
+   - This will output the message to the browser's console
+   - Useful for debugging and displaying information
+*/
+console.log("${message}"); // Outputs: ${message}\n`;
         setCode(prev => prev + newCode);
+        console.log(`Added console.log for message: ${message}`);
         setOutput(`Added console.log statement`);
         stopListening();
         toast({
@@ -73,19 +89,21 @@ console.log("${message}");\n`;
 
   const executeCode = () => {
     try {
-      console.log("Executing code:");
-      console.log(code);
+      console.group("Code Execution Results");
+      console.log("Executing code:\n", code);
       // Using Function constructor to safely evaluate code
       const result = new Function(code)();
       const consoleOutput = result !== undefined ? String(result) : "Code executed successfully";
+      console.log("Execution output:", consoleOutput);
+      console.groupEnd();
       setOutput(consoleOutput);
       toast({
         title: "Code Executed",
-        description: "Check the console for output",
+        description: "Check the browser console (F12) for detailed output",
       });
     } catch (error) {
-      setOutput(`Error: ${error.message}`);
       console.error("Code execution error:", error);
+      setOutput(`Error: ${error.message}`);
       toast({
         title: "Error",
         description: error.message,
@@ -98,15 +116,57 @@ console.log("${message}");\n`;
     <Card className="p-6 max-w-4xl mx-auto mt-10">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Voice Coding Game</h2>
-        <Button
-          variant="ghost"
-          onClick={() => setShowExplanation(!showExplanation)}
-          className="flex items-center space-x-2"
-        >
-          <Info className="w-4 h-4" />
-          <span>How to Use</span>
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setShowCodeDetails(!showCodeDetails);
+              setShowExplanation(false);
+            }}
+            className="flex items-center space-x-2"
+          >
+            <CodeIcon className="w-4 h-4" />
+            <span>Code Details</span>
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setShowExplanation(!showExplanation);
+              setShowCodeDetails(false);
+            }}
+            className="flex items-center space-x-2"
+          >
+            <Info className="w-4 h-4" />
+            <span>How to Use</span>
+          </Button>
+        </div>
       </div>
+
+      {showCodeDetails && (
+        <Card className="mb-6 p-4 bg-gray-50">
+          <h3 className="text-lg font-semibold mb-2">Code Explanation</h3>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium">Variables:</h4>
+              <p className="text-sm text-gray-600">Variables store data that can be used throughout your code.</p>
+              <p className="text-sm text-gray-600">Example: let count = 5;</p>
+              <p className="text-sm text-gray-600">Usage: count + 1 = 6</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Functions:</h4>
+              <p className="text-sm text-gray-600">Functions are reusable blocks of code that perform specific tasks.</p>
+              <p className="text-sm text-gray-600">Example: function greet(name) { return "Hello " + name; }</p>
+              <p className="text-sm text-gray-600">Usage: greet("John") outputs "Hello John"</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Console Output:</h4>
+              <p className="text-sm text-gray-600">console.log displays messages in the browser's console (F12).</p>
+              <p className="text-sm text-gray-600">Example: console.log("Hello!");</p>
+              <p className="text-sm text-gray-600">Output in console: Hello!</p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {showExplanation && (
         <Card className="mb-6 p-4 bg-gray-50">
@@ -143,14 +203,14 @@ console.log("${message}");\n`;
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">Code Editor</h3>
         <pre className="bg-gray-100 p-4 rounded-lg min-h-[200px] whitespace-pre-wrap font-mono text-sm">
-          {code || "// Your code will appear here with explanations..."}
+          {code || "// Your code will appear here with explanations...\n// Use voice commands to start coding!"}
         </pre>
       </div>
 
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">Output</h3>
         <pre className="bg-gray-100 p-4 rounded-lg font-mono text-sm">
-          {output || "// Output will appear here..."}
+          {output || "// Output will appear here...\n// Press 'Run Code' to see results in console (F12)"}
         </pre>
       </div>
 
@@ -161,7 +221,11 @@ console.log("${message}");\n`;
         >
           {isListening ? "Stop Listening" : "Start Speaking"}
         </Button>
-        <Button onClick={executeCode} className="bg-accent">
+        <Button 
+          onClick={executeCode} 
+          className="bg-accent flex items-center gap-2"
+        >
+          <PlayCircle className="w-4 h-4" />
           Run Code
         </Button>
         <Button 
