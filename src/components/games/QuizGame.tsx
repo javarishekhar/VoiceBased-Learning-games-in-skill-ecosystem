@@ -4,6 +4,7 @@ import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { LogOut } from "lucide-react";
 
 interface Question {
   question: string;
@@ -20,7 +21,51 @@ const quizSections = {
         options: ["Narendra Modi", "Rahul Gandhi", "Amit Shah", "Yogi Adityanath"],
         correctAnswer: "Narendra Modi",
       },
-      // Add more current affairs questions...
+      {
+        question: "Which country hosted the 2023 G20 Summit?",
+        options: ["India", "China", "USA", "Brazil"],
+        correctAnswer: "India",
+      },
+      {
+        question: "Who won the FIFA World Cup 2022?",
+        options: ["Argentina", "France", "Brazil", "Germany"],
+        correctAnswer: "Argentina",
+      },
+      {
+        question: "Which country became the first to land on the Moon's south pole in 2023?",
+        options: ["India", "China", "USA", "Russia"],
+        correctAnswer: "India",
+      },
+      {
+        question: "Who is the current Chief Justice of India?",
+        options: ["DY Chandrachud", "NV Ramana", "SA Bobde", "Ranjan Gogoi"],
+        correctAnswer: "DY Chandrachud",
+      },
+      {
+        question: "Which Indian state was divided into two Union Territories in 2019?",
+        options: ["Jammu and Kashmir", "Ladakh", "Telangana", "Andhra Pradesh"],
+        correctAnswer: "Jammu and Kashmir",
+      },
+      {
+        question: "Who is the current President of India?",
+        options: ["Droupadi Murmu", "Ram Nath Kovind", "Pranab Mukherjee", "Pratibha Patil"],
+        correctAnswer: "Droupadi Murmu",
+      },
+      {
+        question: "Which digital payment system was launched by the Government of India?",
+        options: ["UPI", "PayTM", "Google Pay", "PhonePe"],
+        correctAnswer: "UPI",
+      },
+      {
+        question: "Which mission aims to make India a $5 trillion economy?",
+        options: ["Vision 2025", "Make in India", "Digital India", "Atmanirbhar Bharat"],
+        correctAnswer: "Vision 2025",
+      },
+      {
+        question: "Who is the current Finance Minister of India?",
+        options: ["Nirmala Sitharaman", "Arun Jaitley", "P Chidambaram", "Amit Shah"],
+        correctAnswer: "Nirmala Sitharaman",
+      }
     ]
   },
   technical: {
@@ -31,7 +76,51 @@ const quizSections = {
         options: ["Network Security", "Data Storage", "Processing Speed", "Power Management"],
         correctAnswer: "Network Security",
       },
-      // Add more technical questions...
+      {
+        question: "Which protocol is used for secure web browsing?",
+        options: ["HTTPS", "HTTP", "FTP", "SMTP"],
+        correctAnswer: "HTTPS",
+      },
+      {
+        question: "What is the primary function of RAM?",
+        options: ["Temporary Storage", "Permanent Storage", "Processing", "Network Communication"],
+        correctAnswer: "Temporary Storage",
+      },
+      {
+        question: "Which database type uses tables and relations?",
+        options: ["Relational", "NoSQL", "Graph", "Object-oriented"],
+        correctAnswer: "Relational",
+      },
+      {
+        question: "What is an API?",
+        options: ["Application Programming Interface", "Advanced Program Integration", "Automated Program Installation", "Application Process Interface"],
+        correctAnswer: "Application Programming Interface",
+      },
+      {
+        question: "What is the purpose of DNS?",
+        options: ["Domain Name Resolution", "Data Network Security", "Digital Network Service", "Dynamic Network System"],
+        correctAnswer: "Domain Name Resolution",
+      },
+      {
+        question: "Which programming paradigm does JavaScript primarily use?",
+        options: ["Object-Oriented", "Functional", "Procedural", "Logic"],
+        correctAnswer: "Object-Oriented",
+      },
+      {
+        question: "What is the primary purpose of version control?",
+        options: ["Track Code Changes", "Compile Code", "Debug Code", "Deploy Code"],
+        correctAnswer: "Track Code Changes",
+      },
+      {
+        question: "What is containerization in software development?",
+        options: ["Application Packaging", "Data Storage", "Network Security", "User Interface"],
+        correctAnswer: "Application Packaging",
+      },
+      {
+        question: "Which cloud service provides computing resources?",
+        options: ["IaaS", "PaaS", "SaaS", "FaaS"],
+        correctAnswer: "IaaS",
+      }
     ]
   },
   aptitude: {
@@ -42,7 +131,51 @@ const quizSections = {
         options: ["52", "54", "56", "58"],
         correctAnswer: "54",
       },
-      // Add more aptitude questions...
+      {
+        question: "Complete the series: 2, 6, 12, 20, ?",
+        options: ["30", "28", "32", "26"],
+        correctAnswer: "30",
+      },
+      {
+        question: "If ROAD is coded as URDG, then SWAN is coded as?",
+        options: ["VZDQ", "VZCQ", "VZCP", "VZAP"],
+        correctAnswer: "VZDQ",
+      },
+      {
+        question: "Find the odd one out: Cat, Dog, Snake, Elephant, Lion",
+        options: ["Snake", "Cat", "Dog", "Lion"],
+        correctAnswer: "Snake",
+      },
+      {
+        question: "If 15% of x is 45, then x is?",
+        options: ["300", "250", "350", "400"],
+        correctAnswer: "300",
+      },
+      {
+        question: "Complete the analogy: Book : Pages :: Tree : ?",
+        options: ["Leaves", "Branches", "Roots", "Fruits"],
+        correctAnswer: "Leaves",
+      },
+      {
+        question: "If a clock shows 3:45, what is the angle between the hands?",
+        options: ["157.5°", "160.5°", "162.5°", "165.5°"],
+        correctAnswer: "157.5°",
+      },
+      {
+        question: "What comes next in the pattern: 1, 4, 9, 16, 25, ?",
+        options: ["36", "49", "64", "81"],
+        correctAnswer: "36",
+      },
+      {
+        question: "If LOG = 123, then BAG = ?",
+        options: ["423", "432", "234", "324"],
+        correctAnswer: "423",
+      },
+      {
+        question: "Find the missing number: 7, 12, 19, 28, ?",
+        options: ["39", "37", "41", "43"],
+        correctAnswer: "39",
+      }
     ]
   },
   science: {
@@ -53,7 +186,51 @@ const quizSections = {
         options: ["Venus", "Mars", "Jupiter", "Saturn"],
         correctAnswer: "Mars",
       },
-      // Add more science questions...
+      {
+        question: "What is the chemical symbol for gold?",
+        options: ["Au", "Ag", "Fe", "Cu"],
+        correctAnswer: "Au",
+      },
+      {
+        question: "Which gas do plants absorb from the atmosphere?",
+        options: ["Carbon Dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+        correctAnswer: "Carbon Dioxide",
+      },
+      {
+        question: "What is the largest organ in the human body?",
+        options: ["Skin", "Liver", "Heart", "Brain"],
+        correctAnswer: "Skin",
+      },
+      {
+        question: "Which vitamin is produced when skin is exposed to sunlight?",
+        options: ["Vitamin D", "Vitamin C", "Vitamin A", "Vitamin B"],
+        correctAnswer: "Vitamin D",
+      },
+      {
+        question: "What is the speed of light?",
+        options: ["300,000 km/s", "200,000 km/s", "400,000 km/s", "500,000 km/s"],
+        correctAnswer: "300,000 km/s",
+      },
+      {
+        question: "Which blood type is known as the universal donor?",
+        options: ["O-", "A+", "B+", "AB+"],
+        correctAnswer: "O-",
+      },
+      {
+        question: "What is the hardest natural substance on Earth?",
+        options: ["Diamond", "Gold", "Iron", "Platinum"],
+        correctAnswer: "Diamond",
+      },
+      {
+        question: "Which element is most abundant in Earth's atmosphere?",
+        options: ["Nitrogen", "Oxygen", "Carbon", "Hydrogen"],
+        correctAnswer: "Nitrogen",
+      },
+      {
+        question: "What is the process by which plants make their food?",
+        options: ["Photosynthesis", "Respiration", "Digestion", "Absorption"],
+        correctAnswer: "Photosynthesis",
+      }
     ]
   },
   programming: {
@@ -64,7 +241,51 @@ const quizSections = {
         options: ["JavaScript", "C++", "Swift", "Rust"],
         correctAnswer: "JavaScript",
       },
-      // Add more programming questions...
+      {
+        question: "What does HTML stand for?",
+        options: ["HyperText Markup Language", "High Technical Modern Language", "HyperTransfer Mode Language", "High Text Markup Logic"],
+        correctAnswer: "HyperText Markup Language",
+      },
+      {
+        question: "Which programming language is known for Android development?",
+        options: ["Kotlin", "Swift", "Python", "Ruby"],
+        correctAnswer: "Kotlin",
+      },
+      {
+        question: "What is the primary use of CSS?",
+        options: ["Styling", "Programming", "Database", "Networking"],
+        correctAnswer: "Styling",
+      },
+      {
+        question: "Which symbol is used for single-line comments in JavaScript?",
+        options: ["//", "/*", "#", "--"],
+        correctAnswer: "//",
+      },
+      {
+        question: "What does SQL stand for?",
+        options: ["Structured Query Language", "Simple Question Language", "System Query Logic", "Standard Quality Level"],
+        correctAnswer: "Structured Query Language",
+      },
+      {
+        question: "Which language is Python named after?",
+        options: ["Monty Python", "Snake", "Computer Term", "Person"],
+        correctAnswer: "Monty Python",
+      },
+      {
+        question: "What is the file extension for Java source code?",
+        options: [".java", ".js", ".py", ".cpp"],
+        correctAnswer: ".java",
+      },
+      {
+        question: "Which language is used for iOS development?",
+        options: ["Swift", "Java", "Python", "C#"],
+        correctAnswer: "Swift",
+      },
+      {
+        question: "What does PHP stand for?",
+        options: ["PHP: Hypertext Preprocessor", "Personal Home Page", "Programming High Protocol", "Public Host Program"],
+        correctAnswer: "PHP: Hypertext Preprocessor",
+      }
     ]
   }
 };
@@ -74,14 +295,26 @@ export function QuizGame() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [randomizedQuestions, setRandomizedQuestions] = useState([]);
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
 
   useEffect(() => {
+    if (selectedSection) {
+      const questions = [...quizSections[selectedSection].questions];
+      // Fisher-Yates shuffle algorithm
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+      setRandomizedQuestions(questions);
+    }
+  }, [selectedSection]);
+
+  useEffect(() => {
     if (transcript && isListening && selectedSection) {
       const answer = transcript.toLowerCase().trim();
-      const currentQuestions = quizSections[selectedSection].questions;
-      const correctAnswer = currentQuestions[currentQuestion].correctAnswer.toLowerCase();
+      const correctAnswer = randomizedQuestions[currentQuestion].correctAnswer.toLowerCase();
       
       if (answer === correctAnswer) {
         stopListening();
@@ -91,21 +324,21 @@ export function QuizGame() {
         });
         setScore((prev) => prev + 1);
         setTimeout(() => {
-          if (currentQuestion < currentQuestions.length - 1) {
+          if (currentQuestion < randomizedQuestions.length - 1) {
             setCurrentQuestion((prev) => prev + 1);
           } else {
             setGameOver(true);
           }
         }, 1500);
-      } else if (currentQuestions[currentQuestion].options.map(opt => opt.toLowerCase()).includes(answer)) {
+      } else if (randomizedQuestions[currentQuestion].options.map(opt => opt.toLowerCase()).includes(answer)) {
         stopListening();
         toast({
           title: "Incorrect",
-          description: `The correct answer was ${currentQuestions[currentQuestion].correctAnswer}`,
+          description: `The correct answer was ${randomizedQuestions[currentQuestion].correctAnswer}`,
           variant: "destructive",
         });
         setTimeout(() => {
-          if (currentQuestion < currentQuestions.length - 1) {
+          if (currentQuestion < randomizedQuestions.length - 1) {
             setCurrentQuestion((prev) => prev + 1);
           } else {
             setGameOver(true);
@@ -113,13 +346,21 @@ export function QuizGame() {
         }, 1500);
       }
     }
-  }, [transcript, currentQuestion, isListening, stopListening, toast, selectedSection]);
+  }, [transcript, currentQuestion, isListening, stopListening, toast, selectedSection, randomizedQuestions]);
 
   const restartGame = () => {
     setCurrentQuestion(0);
     setScore(0);
     setGameOver(false);
     setSelectedSection(null);
+    setRandomizedQuestions([]);
+  };
+
+  const quitGame = () => {
+    const confirmQuit = window.confirm("Are you sure you want to quit the quiz?");
+    if (confirmQuit) {
+      restartGame();
+    }
   };
 
   if (!selectedSection) {
@@ -146,7 +387,7 @@ export function QuizGame() {
       <Card className="p-6 max-w-lg mx-auto mt-10">
         <h2 className="text-2xl font-bold text-center mb-4">Game Over!</h2>
         <p className="text-center mb-4">
-          Your score: {score} out of {quizSections[selectedSection].questions.length}
+          Your score: {score} out of {randomizedQuestions.length}
         </p>
         <div className="flex justify-center gap-4">
           <Button onClick={restartGame} className="bg-primary hover:bg-primary/90">
@@ -160,23 +401,32 @@ export function QuizGame() {
     );
   }
 
-  const currentQuestions = quizSections[selectedSection].questions;
-
   return (
     <Card className="p-6 max-w-lg mx-auto mt-10">
       <div className="mb-4 flex justify-between items-center">
         <span className="text-sm font-medium">
-          Question {currentQuestion + 1}/{currentQuestions.length}
+          Question {currentQuestion + 1}/{randomizedQuestions.length}
         </span>
-        <span className="text-sm font-medium">Score: {score}</span>
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-medium">Score: {score}</span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={quitGame}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Quit
+          </Button>
+        </div>
       </div>
       
       <h2 className="text-xl font-bold mb-4">
-        {currentQuestions[currentQuestion].question}
+        {randomizedQuestions[currentQuestion]?.question}
       </h2>
       
       <div className="grid grid-cols-2 gap-4 mb-6">
-        {currentQuestions[currentQuestion].options.map((option, index) => (
+        {randomizedQuestions[currentQuestion]?.options.map((option, index) => (
           <div
             key={index}
             className="p-4 border rounded-lg text-center hover:bg-gray-50 cursor-pointer"
