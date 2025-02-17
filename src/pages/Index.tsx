@@ -8,6 +8,12 @@ import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const games = [
   { 
@@ -78,11 +84,8 @@ const Header = () => {
               {showProjectInfo && (
                 <Card className="absolute top-full mt-2 right-0 w-96 p-4 z-50 shadow-lg">
                   <h3 className="font-semibold mb-2">About Voice Learning Platform</h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    Our platform revolutionizes learning through voice interaction, making education more accessible and engaging.
-                  </p>
                   <p className="text-sm text-gray-600">
-                    Features include interactive quizzes, coding exercises, carpentry training, and first aid instruction - all controlled by voice commands.
+                    Our platform revolutionizes learning through voice interaction, making education more accessible and engaging.
                   </p>
                 </Card>
               )}
@@ -104,23 +107,26 @@ const Header = () => {
               {showContact && (
                 <Card className="absolute top-full mt-2 right-0 w-72 p-4 z-50 shadow-lg">
                   <h3 className="font-semibold mb-2">Contact Us</h3>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <p>Javari Shekhar: javarishekhar@gmail.com</p>
-                    <p>A Vivekananda: vivekananda@gmail.com</p>
-                  </div>
+                  <p className="text-sm text-gray-600">Email: contact@voicelearning.com</p>
                 </Card>
               )}
             </div>
 
-            {games.map((game) => (
-              <div 
-                key={game.id}
-                className="flex items-center space-x-1 text-gray-600 hover:text-primary cursor-pointer"
-              >
-                <game.icon className="w-4 h-4" />
-                <span className="text-sm hidden md:inline">{game.title}</span>
-              </div>
-            ))}
+            <TooltipProvider>
+              {games.map((game) => (
+                <Tooltip key={game.id}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center space-x-1 text-gray-600 hover:text-primary cursor-pointer">
+                      <game.icon className="w-4 h-4" />
+                      <span className="text-sm hidden md:inline">{game.title}</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Welcome Shekhar, let's play the game..!!</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </TooltipProvider>
           </div>
         </div>
       </nav>
@@ -132,7 +138,7 @@ const Footer = () => (
   <footer className="bg-white border-t mt-auto">
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="text-center text-gray-600 text-sm">
-        <p>&copy; {new Date().getFullYear()} All rights reserved to Javari Shekhar and A Vivekananda.</p>
+        <p>Developed by Shekhar and Vivekananda</p>
       </div>
     </div>
   </footer>
@@ -143,6 +149,7 @@ const GameInstructions = ({ gameId }) => {
   const [showInstructions, setShowInstructions] = useState(false);
 
   const speakInstructions = () => {
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(game.instructions);
     window.speechSynthesis.speak(utterance);
   };
