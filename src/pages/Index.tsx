@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
@@ -8,7 +7,7 @@ import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home, Info, Mail } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
 
 const games = [
   { 
@@ -17,6 +16,7 @@ const games = [
     component: QuizGame,
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
     description: "Test your knowledge with voice-controlled questions",
+    instructions: "Welcome to the Knowledge Quiz! To play this game, listen to each question carefully and speak your answer clearly. Choose from the provided options by saying the answer out loud. The game will tell you if you're correct or incorrect and keep track of your score.",
     icon: BookOpen
   },
   { 
@@ -25,6 +25,7 @@ const games = [
     component: CodingGame,
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
     description: "Learn coding through voice commands",
+    instructions: "Welcome to Voice Coding! You can create variables by saying 'create variable name equal to value', create functions by saying 'create function name', and print to console by saying 'print' followed by your message. Use the Run Code button to execute your code.",
     icon: Code
   },
   { 
@@ -33,6 +34,7 @@ const games = [
     component: CarpentryGame,
     image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
     description: "Master carpentry skills step by step",
+    instructions: "Welcome to Carpentry Training! Complete each step by saying the step name or 'next step'. You can ask 'what tools do I need' to learn about required tools, or say 'explain details' to get more information about the current step.",
     icon: Hammer
   },
   { 
@@ -41,6 +43,7 @@ const games = [
     component: FirstAidGame,
     image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
     description: "Learn life-saving first aid procedures",
+    instructions: "Welcome to First Aid Training! Follow each step carefully by saying the step name or 'next step'. You can ask 'what equipment do I need' to check required equipment, or say 'explain details' to get more information about the current step.",
     icon: Heart
   },
 ];
@@ -135,8 +138,46 @@ const Footer = () => (
   </footer>
 );
 
+const GameInstructions = ({ gameId }) => {
+  const game = games.find(g => g.id === gameId);
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const speakInstructions = () => {
+    const utterance = new SpeechSynthesisUtterance(game.instructions);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  return (
+    <div className="mb-6">
+      <div className="flex justify-end gap-2">
+        <Button
+          variant="outline"
+          onClick={() => setShowInstructions(!showInstructions)}
+          className="flex items-center gap-2"
+        >
+          <HelpCircle className="w-4 h-4" />
+          How to Use
+        </Button>
+        <Button
+          variant="outline"
+          onClick={speakInstructions}
+          className="flex items-center gap-2"
+        >
+          <Volume2 className="w-4 h-4" />
+          Read Instructions
+        </Button>
+      </div>
+      {showInstructions && (
+        <Card className="mt-4 p-4 bg-gray-50">
+          <p className="text-gray-600">{game.instructions}</p>
+        </Card>
+      )}
+    </div>
+  );
+};
+
 const Index = () => {
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const GameComponent = selectedGame 
     ? games.find(g => g.id === selectedGame)?.component 
@@ -184,6 +225,7 @@ const Index = () => {
                 >
                   ← Back to Games
                 </Button>
+                <GameInstructions gameId={selectedGame} />
                 {GameComponent && <GameComponent />}
               </div>
             )}
