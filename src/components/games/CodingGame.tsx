@@ -204,12 +204,12 @@ console.log("${message}"); // Outputs: ${message}\n`;
                 <div>
                   <h4 className="font-medium">Functions:</h4>
                   <p className="text-sm text-gray-600">Functions are reusable blocks of code that perform specific tasks.</p>
-                  <p className="text-sm text-gray-600">Example: function greet(name) { return "Hello " + name; }</p>
+                  <p className="text-sm text-gray-600">Example: function greet(name) {"{"} return "Hello " + name; {"}"}</p>
                   <p className="text-sm text-gray-600">Usage: greet("John") outputs "Hello John"</p>
                 </div>
                 <div>
                   <h4 className="font-medium">Console Output:</h4>
-                  <p className="text-sm text-gray-600">console.log displays messages in the browser's console (F12).</p>
+                  <p className="text-sm text-gray-600">console.log displays messages in the browser&apos;s console (F12).</p>
                   <p className="text-sm text-gray-600">Example: console.log("Hello!");</p>
                   <p className="text-sm text-gray-600">Output in console: Hello!</p>
                 </div>
@@ -231,7 +231,7 @@ console.log("${message}"); // Outputs: ${message}\n`;
                 <div>
                   <h4 className="font-medium">Creating Functions:</h4>
                   <p className="text-sm text-gray-600">Say: "Create function sayHello"</p>
-                  <p className="text-sm text-gray-600">Output: function sayHello() { }</p>
+                  <p className="text-sm text-gray-600">Output: function sayHello() {"{"} {"}"}</p>
                 </div>
                 <div>
                   <h4 className="font-medium">Printing to Console:</h4>
