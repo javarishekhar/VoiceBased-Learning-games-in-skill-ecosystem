@@ -1,6 +1,4 @@
-
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
 import { QuizGame } from "@/components/games/QuizGame";
@@ -9,14 +7,13 @@ import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2, LogOut } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/hooks/use-toast";
 
 const games = [
   { 
@@ -60,17 +57,6 @@ const games = [
 const Header = () => {
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showContact, setShowContact] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
-    navigate("/login");
-  };
 
   return (
     <header className="bg-white shadow-sm">
@@ -141,15 +127,6 @@ const Header = () => {
                 </Tooltip>
               ))}
             </TooltipProvider>
-            
-            <Button 
-              variant="ghost" 
-              className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={handleLogout}
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </Button>
           </div>
         </div>
       </nav>
