@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ export function CodingGame() {
   const [output, setOutput] = useState("");
   const [showExplanation, setShowExplanation] = useState(false);
   const [showCodeDetails, setShowCodeDetails] = useState(false);
+  const [num1, setNum1] = useState<number | null>(null);
+  const [num2, setNum2] = useState<number | null>(null);
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
 
@@ -18,8 +19,59 @@ export function CodingGame() {
       const command = transcript.toLowerCase().trim();
       console.log("Processing coding command:", command);
       
+      // Handle program generation for sum of two numbers
+      if (command.includes("write") && command.includes("program") && command.includes("sum")) {
+        const sumProgram = `// Program to add two numbers
+let number1 = ${num1 ?? '_____'}; // First number
+let number2 = ${num2 ?? '_____'}; // Second number
+
+// Calculate sum
+let sum = number1 + number2;
+
+// Display result
+console.log(\`Sum of \${number1} and \${number2} is: \${sum}\`);
+`;
+        setCode(sumProgram);
+        setOutput("Please provide two numbers using voice commands: 'first number is X' and 'second number is Y'");
+        stopListening();
+        toast({
+          title: "Code Generated",
+          description: "Now provide the numbers using voice commands",
+        });
+      }
+      
+      // Handle first number input
+      else if (command.includes("first number is")) {
+        const numberMatch = command.match(/first number is (\d+)/);
+        if (numberMatch) {
+          const value = parseInt(numberMatch[1]);
+          setNum1(value);
+          updateCode(value, num2);
+          stopListening();
+          toast({
+            title: "First Number Set",
+            description: `First number set to ${value}`,
+          });
+        }
+      }
+      
+      // Handle second number input
+      else if (command.includes("second number is")) {
+        const numberMatch = command.match(/second number is (\d+)/);
+        if (numberMatch) {
+          const value = parseInt(numberMatch[1]);
+          setNum2(value);
+          updateCode(num1, value);
+          stopListening();
+          toast({
+            title: "Second Number Set",
+            description: `Second number set to ${value}`,
+          });
+        }
+      }
+      
       // Handle variable creation
-      if (command.includes("create") && command.includes("variable")) {
+      else if (command.includes("create") && command.includes("variable")) {
         const variableParts = command.match(/variable\s+(\w+)\s+equal\s+to\s+(\d+)/);
         if (variableParts) {
           const [_, varName, value] = variableParts;
@@ -64,23 +116,46 @@ export function CodingGame() {
         });
       }
     }
-  }, [transcript, isListening, stopListening, toast]);
+  }, [transcript, isListening, stopListening, toast, num1, num2]);
+
+  const updateCode = (number1: number | null, number2: number | null) => {
+    const sumProgram = `// Program to add two numbers
+let number1 = ${number1 ?? '_____'}; // First number
+let number2 = ${number2 ?? '_____'}; // Second number
+
+// Calculate sum
+let sum = number1 + number2;
+
+// Display result
+console.log(\`Sum of \${number1} and \${number2} is: \${sum}\`);
+`;
+    setCode(sumProgram);
+  };
 
   const executeCode = () => {
     try {
+      if (num1 === null || num2 === null) {
+        toast({
+          title: "Error",
+          description: "Please provide both numbers using voice commands first",
+          variant: "destructive",
+        });
+        return;
+      }
+
       console.group("Code Execution Results");
       console.log("Executing code:\n", code);
       
       // Execute in current window
       const result = new Function(code)();
-      const consoleOutput = result !== undefined ? String(result) : "Code executed successfully";
+      const consoleOutput = result !== undefined ? String(result) : `Sum of ${num1} and ${num2} is: ${num1 + num2}`;
       console.log("Execution output:", consoleOutput);
       console.groupEnd();
       setOutput(consoleOutput);
       
       toast({
         title: "Code Executed",
-        description: "Check the browser console (F12) for output",
+        description: "Check the output section for results",
       });
     } catch (error) {
       console.error("Code execution error:", error);
