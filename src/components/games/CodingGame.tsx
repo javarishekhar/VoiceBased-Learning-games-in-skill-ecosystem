@@ -1,9 +1,8 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Info, PlayCircle, Code as CodeIcon, Volume2, MicrophoneIcon, StopCircleIcon } from "lucide-react";
+import { Info, PlayCircle, Code as CodeIcon, Volume2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function CodingGame() {
@@ -19,17 +18,6 @@ export function CodingGame() {
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
   const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-
-  // Monitor if speech synthesis is active
-  useEffect(() => {
-    const checkSpeaking = () => {
-      setIsSpeaking(window.speechSynthesis.speaking);
-    };
-
-    const interval = setInterval(checkSpeaking, 100);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (transcript && isListening) {
@@ -547,10 +535,9 @@ else:
 
   const explainCode = () => {
     // Stop any existing speech synthesis
-    if (isSpeaking) {
+    if (speechSynthesisRef.current) {
       window.speechSynthesis.cancel();
       speechSynthesisRef.current = null;
-      setIsSpeaking(false);
       return;
     }
 
@@ -586,12 +573,10 @@ else:
     
     // Speak the explanation using the Web Speech API
     window.speechSynthesis.speak(utterance);
-    setIsSpeaking(true);
     
     // Add an event listener to clear the reference when speech ends
     utterance.onend = () => {
       speechSynthesisRef.current = null;
-      setIsSpeaking(false);
     };
     
     // Show toast notification
@@ -690,10 +675,10 @@ else:
         <h3 className="text-lg font-semibold mb-2">Voice Commands</h3>
         <ul className="space-y-2 text-sm text-gray-600">
           <li>• "Write a program on sum of two numbers"</li>
-          <li>• "Write a program on sum of squares"</li>
           <li>• "Write a program on multiplication of two numbers"</li>
           <li>• "Write a program on division of two numbers"</li>
           <li>• "Write a program on leap year"</li>
+          <li>• "Write a program on sum of squares"</li>
           <li>• "Write a program on even or odd number"</li>
           <li>• "First number is [value]" / "Second number is [value]" / "Number is [value]" / "Year is [value]"</li>
           <li>• "Create variable [name] equal to [value]"</li>
@@ -737,23 +722,17 @@ else:
 
       <div className="flex flex-wrap gap-4 justify-center">
         <Button
-          onClick={startListening}
-          className="bg-primary flex items-center gap-2"
-          disabled={isListening}
+          onClick={() => {
+            if (isListening) {
+              stopListening();
+            } else {
+              startListening();
+            }
+          }}
+          className={isListening ? "bg-secondary" : "bg-primary"}
         >
-          <MicrophoneIcon className="w-4 h-4" />
-          Start Speaking
+          {isListening ? "Stop Listening" : "Start Speaking"}
         </Button>
-
-        <Button
-          onClick={stopListening}
-          className="bg-secondary flex items-center gap-2"
-          disabled={!isListening}
-        >
-          <StopCircleIcon className="w-4 h-4" />
-          Stop Speaking
-        </Button>
-
         <Button 
           onClick={executeCode} 
           className="bg-accent flex items-center gap-2"
@@ -764,10 +743,9 @@ else:
         <Button 
           onClick={explainCode} 
           className="flex items-center gap-2"
-          variant={isSpeaking ? "secondary" : "default"}
         >
           <Volume2 className="w-4 h-4" />
-          {isSpeaking ? "Stop Explanation" : "Explain Code"}
+          {speechSynthesisRef.current ? "Stop Explanation" : "Explain Code"}
         </Button>
         <Button 
           onClick={() => {
@@ -781,7 +759,6 @@ else:
             if (speechSynthesisRef.current) {
               window.speechSynthesis.cancel();
               speechSynthesisRef.current = null;
-              setIsSpeaking(false);
             }
           }} 
           variant="outline"
