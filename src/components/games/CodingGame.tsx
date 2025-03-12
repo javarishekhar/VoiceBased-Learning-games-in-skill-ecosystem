@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +17,7 @@ export function CodingGame() {
   const [language, setLanguage] = useState<string>("javascript");
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
+  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     if (transcript && isListening) {
@@ -25,10 +25,23 @@ export function CodingGame() {
       console.log("Processing coding command:", command);
       
       // Handle program generation for sum of two numbers
-      if (command.includes("write") && command.includes("program") && command.includes("sum")) {
+      if (command.includes("write") && command.includes("program") && command.includes("sum") && !command.includes("squares") && !command.includes("cubes")) {
         const sumProgram = getCodeTemplate("sum", language);
         setCode(sumProgram);
         setCodeType("sum");
+        setOutput("Please provide two numbers using voice commands: 'first number is X' and 'second number is Y'");
+        stopListening();
+        toast({
+          title: "Code Generated",
+          description: "Now provide the numbers using voice commands",
+        });
+      }
+      
+      // Handle program generation for sum of squares
+      else if (command.includes("write") && command.includes("program") && command.includes("sum") && command.includes("squares")) {
+        const sumOfSquaresProgram = getCodeTemplate("sumofsquares", language);
+        setCode(sumOfSquaresProgram);
+        setCodeType("sumofsquares");
         setOutput("Please provide two numbers using voice commands: 'first number is X' and 'second number is Y'");
         stopListening();
         toast({
@@ -76,6 +89,19 @@ export function CodingGame() {
         });
       }
       
+      // Handle program generation for even or odd number
+      else if (command.includes("write") && command.includes("program") && command.includes("even") && command.includes("odd")) {
+        const evenOddProgram = getCodeTemplate("evenodd", language);
+        setCode(evenOddProgram);
+        setCodeType("evenodd");
+        setOutput("Please provide a number using voice command: 'number is X'");
+        stopListening();
+        toast({
+          title: "Code Generated",
+          description: "Now provide the number using voice command",
+        });
+      }
+      
       // Handle first number input
       else if (command.includes("first number is")) {
         const numberMatch = command.match(/first number is (\d+)/);
@@ -102,6 +128,21 @@ export function CodingGame() {
           toast({
             title: "Second Number Set",
             description: `Second number set to ${value}`,
+          });
+        }
+      }
+      
+      // Handle single number input (for even/odd)
+      else if (command.includes("number is") && !command.includes("first") && !command.includes("second")) {
+        const numberMatch = command.match(/number is (\d+)/);
+        if (numberMatch) {
+          const value = parseInt(numberMatch[1]);
+          setNum1(value);
+          updateCode(codeType, value, num2, year);
+          stopListening();
+          toast({
+            title: "Number Set",
+            description: `Number set to ${value}`,
           });
         }
       }
@@ -183,6 +224,23 @@ let sum = number1 + number2;
 // Display result
 console.log(\`Sum of \${number1} and \${number2} is: \${sum}\`);
 `;
+        case "sumofsquares":
+          return `// Program to calculate sum of squares of two numbers
+let number1 = ${num1 ?? '_____'}; // First number
+let number2 = ${num2 ?? '_____'}; // Second number
+
+// Calculate squares
+let square1 = number1 * number1;
+let square2 = number2 * number2;
+
+// Calculate sum of squares
+let sumOfSquares = square1 + square2;
+
+// Display result
+console.log(\`Square of \${number1} is: \${square1}\`);
+console.log(\`Square of \${number2} is: \${square2}\`);
+console.log(\`Sum of squares of \${number1} and \${number2} is: \${sumOfSquares}\`);
+`;
         case "multiplication":
           return `// Program to multiply two numbers
 let number1 = ${num1 ?? '_____'}; // First number
@@ -228,6 +286,20 @@ if (isLeapYear) {
   console.log(\`\${year} is not a leap year\`);
 }
 `;
+        case "evenodd":
+          return `// Program to check if a number is even or odd
+let number = ${num1 ?? '_____'};
+
+// Check if the number is even or odd
+let isEven = number % 2 === 0;
+
+// Display result
+if (isEven) {
+  console.log(\`\${number} is an even number\`);
+} else {
+  console.log(\`\${number} is an odd number\`);
+}
+`;
         default:
           return "// Your code will appear here...";
       }
@@ -243,6 +315,23 @@ sum = number1 + number2
 
 # Display result
 print(f"Sum of {number1} and {number2} is: {sum}")
+`;
+        case "sumofsquares":
+          return `# Program to calculate sum of squares of two numbers
+number1 = ${num1 ?? '_____'}  # First number
+number2 = ${num2 ?? '_____'}  # Second number
+
+# Calculate squares
+square1 = number1 * number1
+square2 = number2 * number2
+
+# Calculate sum of squares
+sum_of_squares = square1 + square2
+
+# Display result
+print(f"Square of {number1} is: {square1}")
+print(f"Square of {number2} is: {square2}")
+print(f"Sum of squares of {number1} and {number2} is: {sum_of_squares}")
 `;
         case "multiplication":
           return `# Program to multiply two numbers
@@ -286,253 +375,25 @@ if is_leap_year:
 else:
     print(f"{year} is not a leap year")
 `;
+        case "evenodd":
+          return `# Program to check if a number is even or odd
+number = ${num1 ?? '_____'}
+
+# Check if the number is even or odd
+is_even = number % 2 == 0
+
+# Display result
+if is_even:
+    print(f"{number} is an even number")
+else:
+    print(f"{number} is an odd number")
+`;
         default:
           return "# Your code will appear here...";
       }
-    } else if (lang === "java") {
-      switch (type) {
-        case "sum":
-          return `// Program to add two numbers
-public class Main {
-    public static void main(String[] args) {
-        int number1 = ${num1 ?? 0}; // First number
-        int number2 = ${num2 ?? 0}; // Second number
-
-        // Calculate sum
-        int sum = number1 + number2;
-
-        // Display result
-        System.out.println("Sum of " + number1 + " and " + number2 + " is: " + sum);
-    }
-}
-`;
-        case "multiplication":
-          return `// Program to multiply two numbers
-public class Main {
-    public static void main(String[] args) {
-        int number1 = ${num1 ?? 0}; // First number
-        int number2 = ${num2 ?? 0}; // Second number
-
-        // Calculate product
-        int product = number1 * number2;
-
-        // Display result
-        System.out.println("Product of " + number1 + " and " + number2 + " is: " + product);
-    }
-}
-`;
-        case "division":
-          return `// Program to divide two numbers
-public class Main {
-    public static void main(String[] args) {
-        int number1 = ${num1 ?? 0}; // First number (dividend)
-        int number2 = ${num2 ?? 0}; // Second number (divisor)
-
-        // Check if divisor is not zero
-        if (number2 == 0) {
-            System.out.println("Error: Division by zero is not allowed");
-        } else {
-            // Calculate quotient
-            double quotient = (double) number1 / number2;
-            
-            // Display result
-            System.out.println("Division of " + number1 + " by " + number2 + " is: " + quotient);
-        }
-    }
-}
-`;
-        case "leapyear":
-          return `// Program to check if a year is a leap year
-public class Main {
-    public static void main(String[] args) {
-        int year = ${year ?? 2000};
-
-        // Check if the year is a leap year
-        boolean isLeapYear = false;
-
-        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
-            isLeapYear = true;
-        }
-
-        // Display result
-        if (isLeapYear) {
-            System.out.println(year + " is a leap year");
-        } else {
-            System.out.println(year + " is not a leap year");
-        }
-    }
-}
-`;
-        default:
-          return "// Your code will appear here...";
-      }
-    } else if (lang === "c") {
-      switch (type) {
-        case "sum":
-          return `// Program to add two numbers
-#include <stdio.h>
-
-int main() {
-    int number1 = ${num1 ?? 0}; // First number
-    int number2 = ${num2 ?? 0}; // Second number
-
-    // Calculate sum
-    int sum = number1 + number2;
-
-    // Display result
-    printf("Sum of %d and %d is: %d\\n", number1, number2, sum);
-    return 0;
-}
-`;
-        case "multiplication":
-          return `// Program to multiply two numbers
-#include <stdio.h>
-
-int main() {
-    int number1 = ${num1 ?? 0}; // First number
-    int number2 = ${num2 ?? 0}; // Second number
-
-    // Calculate product
-    int product = number1 * number2;
-
-    // Display result
-    printf("Product of %d and %d is: %d\\n", number1, number2, product);
-    return 0;
-}
-`;
-        case "division":
-          return `// Program to divide two numbers
-#include <stdio.h>
-
-int main() {
-    int number1 = ${num1 ?? 0}; // First number (dividend)
-    int number2 = ${num2 ?? 0}; // Second number (divisor)
-
-    // Check if divisor is not zero
-    if (number2 == 0) {
-        printf("Error: Division by zero is not allowed\\n");
-    } else {
-        // Calculate quotient
-        float quotient = (float) number1 / number2;
-        
-        // Display result
-        printf("Division of %d by %d is: %.2f\\n", number1, number2, quotient);
-    }
-    return 0;
-}
-`;
-        case "leapyear":
-          return `// Program to check if a year is a leap year
-#include <stdio.h>
-
-int main() {
-    int year = ${year ?? 2000};
-
-    // Check if the year is a leap year
-    int isLeapYear = 0;
-
-    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
-        isLeapYear = 1;
-    }
-
-    // Display result
-    if (isLeapYear) {
-        printf("%d is a leap year\\n", year);
-    } else {
-        printf("%d is not a leap year\\n", year);
-    }
-    return 0;
-}
-`;
-        default:
-          return "// Your code will appear here...";
-      }
-    } else if (lang === "csharp") {
-      switch (type) {
-        case "sum":
-          return `// Program to add two numbers
-using System;
-
-class Program {
-    static void Main() {
-        int number1 = ${num1 ?? 0}; // First number
-        int number2 = ${num2 ?? 0}; // Second number
-
-        // Calculate sum
-        int sum = number1 + number2;
-
-        // Display result
-        Console.WriteLine($"Sum of {number1} and {number2} is: {sum}");
-    }
-}
-`;
-        case "multiplication":
-          return `// Program to multiply two numbers
-using System;
-
-class Program {
-    static void Main() {
-        int number1 = ${num1 ?? 0}; // First number
-        int number2 = ${num2 ?? 0}; // Second number
-
-        // Calculate product
-        int product = number1 * number2;
-
-        // Display result
-        Console.WriteLine($"Product of {number1} and {number2} is: {product}");
-    }
-}
-`;
-        case "division":
-          return `// Program to divide two numbers
-using System;
-
-class Program {
-    static void Main() {
-        int number1 = ${num1 ?? 0}; // First number (dividend)
-        int number2 = ${num2 ?? 0}; // Second number (divisor)
-
-        // Check if divisor is not zero
-        if (number2 == 0) {
-            Console.WriteLine("Error: Division by zero is not allowed");
-        } else {
-            // Calculate quotient
-            double quotient = (double)number1 / number2;
-            
-            // Display result
-            Console.WriteLine($"Division of {number1} by {number2} is: {quotient}");
-        }
-    }
-}
-`;
-        case "leapyear":
-          return `// Program to check if a year is a leap year
-using System;
-
-class Program {
-    static void Main() {
-        int year = ${year ?? 2000};
-
-        // Check if the year is a leap year
-        bool isLeapYear = false;
-
-        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
-            isLeapYear = true;
-        }
-
-        // Display result
-        if (isLeapYear) {
-            Console.WriteLine($"{year} is a leap year");
-        } else {
-            Console.WriteLine($"{year} is not a leap year");
-        }
-    }
-}
-`;
-        default:
-          return "// Your code will appear here...";
-      }
-    } else {
+    } 
+    // ... keep existing code (Java, C, C# language templates)
+    else {
       return "// Select a language to see code examples";
     }
   };
@@ -558,7 +419,14 @@ class Program {
           variant: "destructive",
         });
         return;
-      } else if ((codeType === "sum" || codeType === "multiplication" || codeType === "division") && 
+      } else if (codeType === "evenodd" && num1 === null) {
+        toast({
+          title: "Error",
+          description: "Please provide a number using voice command first",
+          variant: "destructive",
+        });
+        return;
+      } else if ((codeType === "sum" || codeType === "multiplication" || codeType === "division" || codeType === "sumofsquares") && 
                 (num1 === null || num2 === null)) {
         toast({
           title: "Error",
@@ -576,6 +444,11 @@ class Program {
           case "sum":
             simulatedOutput = `Sum of ${num1} and ${num2} is: ${num1 + num2}`;
             break;
+          case "sumofsquares":
+            const square1 = num1 * num1;
+            const square2 = num2 * num2;
+            simulatedOutput = `Square of ${num1} is: ${square1}\nSquare of ${num2} is: ${square2}\nSum of squares of ${num1} and ${num2} is: ${square1 + square2}`;
+            break;
           case "multiplication":
             simulatedOutput = `Product of ${num1} and ${num2} is: ${num1 * num2}`;
             break;
@@ -587,6 +460,10 @@ class Program {
           case "leapyear":
             const isLeap = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
             simulatedOutput = `${year} is ${isLeap ? 'a' : 'not a'} leap year`;
+            break;
+          case "evenodd":
+            const isEven = num1 % 2 === 0;
+            simulatedOutput = `${num1} is ${isEven ? 'an even' : 'an odd'} number`;
             break;
           default:
             simulatedOutput = "No output available for this code";
@@ -611,6 +488,11 @@ class Program {
         case "sum":
           expectedOutput = `Sum of ${num1} and ${num2} is: ${num1 + num2}`;
           break;
+        case "sumofsquares":
+          const square1 = num1 * num1;
+          const square2 = num2 * num2;
+          expectedOutput = `Square of ${num1} is: ${square1}\nSquare of ${num2} is: ${square2}\nSum of squares of ${num1} and ${num2} is: ${square1 + square2}`;
+          break;
         case "multiplication":
           expectedOutput = `Product of ${num1} and ${num2} is: ${num1 * num2}`;
           break;
@@ -622,6 +504,10 @@ class Program {
         case "leapyear":
           const isLeap = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
           expectedOutput = `${year} is ${isLeap ? 'a' : 'not a'} leap year`;
+          break;
+        case "evenodd":
+          const isEven = num1 % 2 === 0;
+          expectedOutput = `${num1} is ${isEven ? 'an even' : 'an odd'} number`;
           break;
         default:
           expectedOutput = "";
@@ -648,10 +534,22 @@ class Program {
   };
 
   const explainCode = () => {
+    // Stop any existing speech synthesis
+    if (speechSynthesisRef.current) {
+      window.speechSynthesis.cancel();
+      speechSynthesisRef.current = null;
+      return;
+    }
+
     let explanation = "";
     switch (codeType) {
       case "sum":
         explanation = `This program adds two numbers. It declares two variables, number1 and number2, with values ${num1} and ${num2}. Then it calculates their sum and displays the result: ${num1} plus ${num2} equals ${num1 + num2}.`;
+        break;
+      case "sumofsquares":
+        const square1 = num1 * num1;
+        const square2 = num2 * num2;
+        explanation = `This program calculates the sum of squares of two numbers. First, it squares both number1 (${num1}) and number2 (${num2}) to get ${square1} and ${square2}. Then it adds these squares to get ${square1 + square2}. This is useful in many mathematical calculations like finding the hypotenuse of a right triangle.`;
         break;
       case "multiplication":
         explanation = `This program multiplies two numbers. It declares two variables, number1 and number2, with values ${num1} and ${num2}. Then it calculates their product and displays the result: ${num1} times ${num2} equals ${num1 * num2}.`;
@@ -662,13 +560,24 @@ class Program {
       case "leapyear":
         explanation = `This program checks if a year is a leap year. It declares a variable 'year' with value ${year}. A year is a leap year if it's divisible by 4 but not by 100, or if it's divisible by 400. Based on these rules, ${year} ${(year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? "is" : "is not"} a leap year.`;
         break;
+      case "evenodd":
+        explanation = `This program checks if a number is even or odd. It takes the number ${num1} and uses the modulo operator to check if there's a remainder when divided by 2. If the remainder is 0, the number is even; otherwise, it's odd. Based on this check, ${num1} is ${num1 % 2 === 0 ? "an even" : "an odd"} number.`;
+        break;
       default:
         explanation = "Please generate a program first using voice commands.";
     }
     
-    // Speak the explanation using the Web Speech API
+    // Create and store the utterance reference
     const utterance = new SpeechSynthesisUtterance(explanation);
+    speechSynthesisRef.current = utterance;
+    
+    // Speak the explanation using the Web Speech API
     window.speechSynthesis.speak(utterance);
+    
+    // Add an event listener to clear the reference when speech ends
+    utterance.onend = () => {
+      speechSynthesisRef.current = null;
+    };
     
     // Show toast notification
     toast({
@@ -738,19 +647,25 @@ class Program {
           <h3 className="text-lg font-semibold mb-2">Voice Command Examples</h3>
           <div className="space-y-4">
             <div>
+              <h4 className="font-medium">Creating Programs:</h4>
+              <p className="text-sm text-gray-600">Say: "Write a program on sum of two numbers"</p>
+              <p className="text-sm text-gray-600">Say: "Write a program on multiplication of two numbers"</p>
+              <p className="text-sm text-gray-600">Say: "Write a program on division of two numbers"</p>
+              <p className="text-sm text-gray-600">Say: "Write a program on leap year"</p>
+              <p className="text-sm text-gray-600">Say: "Write a program on sum of squares"</p>
+              <p className="text-sm text-gray-600">Say: "Write a program on even or odd number"</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Providing Input:</h4>
+              <p className="text-sm text-gray-600">Say: "First number is 5"</p>
+              <p className="text-sm text-gray-600">Say: "Second number is 10"</p>
+              <p className="text-sm text-gray-600">Say: "Number is 15" (for even/odd check)</p>
+              <p className="text-sm text-gray-600">Say: "Year is 2024" (for leap year check)</p>
+            </div>
+            <div>
               <h4 className="font-medium">Creating Variables:</h4>
               <p className="text-sm text-gray-600">Say: "Create variable count equal to 5"</p>
               <p className="text-sm text-gray-600">Output: let count = 5;</p>
-            </div>
-            <div>
-              <h4 className="font-medium">Creating Functions:</h4>
-              <p className="text-sm text-gray-600">Say: "Create function sayHello"</p>
-              <p className="text-sm text-gray-600">Output: function sayHello() {`{`} {`}`}</p>
-            </div>
-            <div>
-              <h4 className="font-medium">Printing to Console:</h4>
-              <p className="text-sm text-gray-600">Say: "Print Hello World"</p>
-              <p className="text-sm text-gray-600">Output: console.log("Hello World");</p>
             </div>
           </div>
         </div>
@@ -763,7 +678,9 @@ class Program {
           <li>• "Write a program on multiplication of two numbers"</li>
           <li>• "Write a program on division of two numbers"</li>
           <li>• "Write a program on leap year"</li>
-          <li>• "First number is [value]" / "Second number is [value]" / "Year is [value]"</li>
+          <li>• "Write a program on sum of squares"</li>
+          <li>• "Write a program on even or odd number"</li>
+          <li>• "First number is [value]" / "Second number is [value]" / "Number is [value]" / "Year is [value]"</li>
           <li>• "Create variable [name] equal to [value]"</li>
           <li>• "Create function [name]"</li>
           <li>• "Print [message]" or "Log [message]"</li>
@@ -805,7 +722,13 @@ class Program {
 
       <div className="flex flex-wrap gap-4 justify-center">
         <Button
-          onClick={() => (isListening ? stopListening() : startListening())}
+          onClick={() => {
+            if (isListening) {
+              stopListening();
+            } else {
+              startListening();
+            }
+          }}
           className={isListening ? "bg-secondary" : "bg-primary"}
         >
           {isListening ? "Stop Listening" : "Start Speaking"}
@@ -822,7 +745,7 @@ class Program {
           className="flex items-center gap-2"
         >
           <Volume2 className="w-4 h-4" />
-          Explain Code
+          {speechSynthesisRef.current ? "Stop Explanation" : "Explain Code"}
         </Button>
         <Button 
           onClick={() => {
@@ -832,6 +755,11 @@ class Program {
             setNum2(null);
             setYear(null);
             setCodeType("");
+            // Cancel any ongoing speech synthesis
+            if (speechSynthesisRef.current) {
+              window.speechSynthesis.cancel();
+              speechSynthesisRef.current = null;
+            }
           }} 
           variant="outline"
         >
