@@ -56,7 +56,6 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
             description: `Error: ${event.error}. Please try again.`,
             variant: "destructive",
           });
-          // Immediately update UI state
           setIsListening(false);
         };
 
@@ -78,39 +77,17 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
   const startListening = useCallback(() => {
     if (recognition) {
-      // Ensure any existing session is stopped first
-      try {
-        recognition.abort();
-      } catch (e) {
-        console.log("No active recognition to abort");
-      }
-      
-      // Start a fresh recognition session
-      setTimeout(() => {
-        try {
-          recognition.start();
-          console.log("Starting voice recognition");
-        } catch (e) {
-          console.error("Error starting recognition:", e);
-          // In case of error, ensure UI is updated
-          setIsListening(false);
-        }
-      }, 100);
+      recognition.start();
+      console.log("Starting voice recognition");
     }
   }, [recognition]);
 
   const stopListening = useCallback(() => {
     if (recognition) {
-      try {
-        recognition.stop();
-        console.log("Stopping voice recognition");
-        // Immediately update UI state even before the onend event fires
-        setIsListening(false);
-      } catch (e) {
-        console.error("Error stopping recognition:", e);
-        // In case of error, ensure UI is updated
-        setIsListening(false);
-      }
+      recognition.stop();
+      console.log("Stopping voice recognition");
+      // Immediately update UI state even before the onend event fires
+      setIsListening(false);
     }
   }, [recognition]);
 
