@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -86,8 +85,6 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
     if (recognition) {
       recognition.stop();
       console.log("Stopping voice recognition");
-      // Immediately update UI state even before the onend event fires
-      setIsListening(false);
     }
   }, [recognition]);
 
