@@ -266,7 +266,7 @@ export function CarpentryGame() {
         <div className="bg-primary/5 p-4 rounded-lg">
           <div className="flex items-center gap-2">
             {currentStep < carpentrySteps.length && 
-              <carpentrySteps[currentStep].icon className="w-5 h-5 text-primary" />}
+              React.createElement(carpentrySteps[currentStep].icon, { className: "w-5 h-5 text-primary" })}
             <p className="text-xl text-primary font-medium">
               {currentStep < carpentrySteps.length ? carpentrySteps[currentStep].name : "All steps completed!"}
             </p>
