@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 interface VoiceContextType {
@@ -7,6 +8,7 @@ interface VoiceContextType {
   startListening: () => void;
   stopListening: () => void;
   confidence: number;
+  clearTranscript: () => void;
 }
 
 const VoiceContext = createContext<VoiceContextType | undefined>(undefined);
@@ -23,7 +25,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
   const [transcript, setTranscript] = useState("");
   const [confidence, setConfidence] = useState(0);
   const { toast } = useToast();
-  const [recognition, setRecognition] = useState<any>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -63,7 +65,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
           setIsListening(false);
         };
 
-        setRecognition(recognition);
+        recognitionRef.current = recognition;
       } else {
         toast({
           title: "Browser Not Supported",
@@ -72,21 +74,62 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         });
       }
     }
+
+    // Clean up on unmount
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (error) {
+          console.error("Error stopping recognition on unmount:", error);
+        }
+      }
+    };
   }, [toast]);
 
   const startListening = useCallback(() => {
-    if (recognition) {
-      recognition.start();
-      console.log("Starting voice recognition");
+    if (recognitionRef.current) {
+      try {
+        // First ensure any ongoing session is aborted
+        if (isListening) {
+          recognitionRef.current.abort();
+        }
+        
+        // Clear previous transcript
+        setTranscript("");
+        
+        // Start new session
+        recognitionRef.current.start();
+        console.log("Starting voice recognition");
+      } catch (error) {
+        console.error("Error starting recognition:", error);
+        // If there's an error, ensure state is correct
+        setIsListening(false);
+        toast({
+          title: "Recognition Error",
+          description: "Failed to start voice recognition. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
-  }, [recognition]);
+  }, [isListening, toast]);
 
   const stopListening = useCallback(() => {
-    if (recognition) {
-      recognition.stop();
-      console.log("Stopping voice recognition");
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+        console.log("Stopping voice recognition");
+      } catch (error) {
+        console.error("Error stopping recognition:", error);
+      }
+      // Immediately update UI state, don't wait for onend
+      setIsListening(false);
     }
-  }, [recognition]);
+  }, []);
+
+  const clearTranscript = useCallback(() => {
+    setTranscript("");
+  }, []);
 
   return (
     <VoiceContext.Provider
@@ -96,6 +139,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         startListening,
         stopListening,
         confidence,
+        clearTranscript,
       }}
     >
       {children}
