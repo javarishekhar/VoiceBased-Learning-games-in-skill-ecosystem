@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
@@ -6,11 +5,9 @@ import { QuizGame } from "@/components/games/QuizGame";
 import { CodingGame } from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
-import { StoryBuilder } from "@/components/games/StoryBuilder";
-import { RhythmMaster } from "@/components/games/RhythmMaster";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2, Music, BookOpen as Book, Gamepad } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -55,26 +52,6 @@ const games = [
     instructions: "Welcome to First Aid Training! Follow each step carefully by saying the step name or 'next step'. You can ask 'what equipment do I need' to check required equipment, or say 'explain details' to get more information about the current step.",
     icon: Heart
   },
-  { 
-    id: "storybuilder", 
-    title: "Story Builder", 
-    component: StoryBuilder,
-    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
-    description: "Create magical stories with your voice",
-    instructions: "Welcome to Story Builder! This game helps children develop storytelling and language skills. I'll start a story and ask you to continue it using your voice. Listen to the prompt, then speak your part of the story. The game will adapt and continue based on what you say.",
-    icon: Book,
-    category: "kids"
-  },
-  { 
-    id: "rhythm", 
-    title: "Rhythm Master", 
-    component: RhythmMaster,
-    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
-    description: "Learn rhythm patterns with your voice",
-    instructions: "Welcome to Rhythm Master! This game helps children develop musical skills and pattern recognition. Listen to the musical sequence, then repeat it using your voice. Say the notes you hear (like 'do re mi'). Complete patterns correctly to unlock new levels and instruments!",
-    icon: Music,
-    category: "kids"
-  }
 ];
 
 const Header = () => {
@@ -208,15 +185,10 @@ const GameInstructions = ({ gameId }) => {
 
 const Index = () => {
   const [selectedGame, setSelectedGame] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const GameComponent = selectedGame 
     ? games.find(g => g.id === selectedGame)?.component 
     : null;
-
-  const filteredGames = selectedCategory === "all" 
-    ? games 
-    : games.filter(game => game.category === selectedCategory);
 
   return (
     <VoiceProvider>
@@ -228,35 +200,13 @@ const Index = () => {
             <h1 className="text-4xl font-bold text-center mb-2 text-primary">
               Voice Learning Games
             </h1>
-            <p className="text-center mb-4 text-gray-600">
+            <p className="text-center mb-8 text-gray-600">
               Select a game to start learning with voice commands!
             </p>
 
-            {!selectedGame && (
-              <div className="flex justify-center mb-8">
-                <div className="inline-flex rounded-md shadow-sm">
-                  <Button
-                    onClick={() => setSelectedCategory("all")}
-                    variant={selectedCategory === "all" ? "default" : "outline"}
-                    className="rounded-l-md rounded-r-none"
-                  >
-                    All Games
-                  </Button>
-                  <Button
-                    onClick={() => setSelectedCategory("kids")}
-                    variant={selectedCategory === "kids" ? "default" : "outline"}
-                    className="rounded-l-none rounded-r-md"
-                  >
-                    <Gamepad className="w-4 h-4 mr-2" />
-                    Kids Games
-                  </Button>
-                </div>
-              </div>
-            )}
-
             {!selectedGame ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                {filteredGames.map((game) => (
+                {games.map((game) => (
                   <Card 
                     key={game.id}
                     className="group p-6 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur transform hover:-translate-y-1"
@@ -269,13 +219,7 @@ const Index = () => {
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <game.icon className="w-5 h-5 text-primary" />
-                      <h2 className="text-2xl font-semibold text-primary">{game.title}</h2>
-                      {game.category === "kids" && (
-                        <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">Kids</span>
-                      )}
-                    </div>
+                    <h2 className="text-2xl font-semibold mb-2 text-primary">{game.title}</h2>
                     <p className="text-gray-600">{game.description}</p>
                   </Card>
                 ))}
