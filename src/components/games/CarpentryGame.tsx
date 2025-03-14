@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ const carpentrySteps = [
     command: "show me the blueprint",
     icon: Cylinder,
     animation: "blueprint",
-    imageUrl: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/532/original/blueprint-scrolling-looping.mp4"
   },
   {
     id: "measure",
@@ -25,7 +26,7 @@ const carpentrySteps = [
     command: "measure 10 inches",
     icon: Ruler,
     animation: "measure",
-    imageUrl: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/046/504/original/P1030768.mp4"
   },
   {
     id: "cut",
@@ -35,7 +36,7 @@ const carpentrySteps = [
     command: "cut the wood",
     icon: Scissors,
     animation: "cut",
-    imageUrl: "https://images.unsplash.com/photo-1598301257982-0cf014dabbcd?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/038/640/original/carpenter-sawing-wood-plank.mp4"
   },
   {
     id: "shape",
@@ -45,7 +46,7 @@ const carpentrySteps = [
     command: "smooth the edges",
     icon: Ruler,
     animation: "shape",
-    imageUrl: "https://images.unsplash.com/photo-1622979535239-b2af807546bb?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/046/138/original/P1030397.mp4"
   },
   {
     id: "drill",
@@ -55,7 +56,7 @@ const carpentrySteps = [
     command: "drill the holes",
     icon: Drill,
     animation: "drill",
-    imageUrl: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/010/original/drill-a-hole.mp4"
   },
   {
     id: "assemble",
@@ -65,7 +66,7 @@ const carpentrySteps = [
     command: "assemble the parts",
     icon: Wrench,
     animation: "assemble",
-    imageUrl: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/034/076/original/wood-work-building.mp4"
   },
   {
     id: "secure",
@@ -75,7 +76,7 @@ const carpentrySteps = [
     command: "hammer the nails",
     icon: Hammer,
     animation: "hammer",
-    imageUrl: "https://images.unsplash.com/photo-1586864387789-628af9feed72?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/035/106/original/carpenter-hammering-a-nail-on-a-plank.mp4"
   },
   {
     id: "finish",
@@ -85,108 +86,133 @@ const carpentrySteps = [
     command: "apply polish",
     icon: PaintBucket,
     animation: "polish",
-    imageUrl: "https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?w=600&auto=format"
+    videoUrl: "https://static.videezy.com/system/resources/previews/000/038/703/original/painting-wooden-planks.mp4"
   }
 ];
 
 // Animation component with enhanced visuals
-const Animation = ({ animation, isPlaying, stepImage }) => {
-  const [frame, setFrame] = useState(0);
-  const animationRef = useRef(null);
+const Animation = ({ animation, isPlaying, videoUrl }) => {
+  const videoRef = useRef(null);
+  const [showParticles, setShowParticles] = useState(false);
+  const canvasRef = useRef(null);
   
   useEffect(() => {
-    if (isPlaying) {
-      let frameCount = 0;
+    if (isPlaying && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play();
+      setShowParticles(true);
       
-      const animate = () => {
-        frameCount++;
-        if (frameCount <= 60) {  // Run for 60 frames (~1 second at 60fps)
-          setFrame(frameCount);
-          animationRef.current = requestAnimationFrame(animate);
-        }
-      };
+      const timer = setTimeout(() => {
+        setShowParticles(false);
+      }, 3000);
       
-      animationRef.current = requestAnimationFrame(animate);
-      
-      return () => {
-        if (animationRef.current) {
-          cancelAnimationFrame(animationRef.current);
-        }
-      };
+      return () => clearTimeout(timer);
     }
   }, [isPlaying]);
   
-  // Each animation has a different color and transformation
-  const getAnimationStyle = () => {
-    const intensity = Math.min(frame / 30, 1);
+  // Canvas animation for particles
+  useEffect(() => {
+    if (!showParticles || !canvasRef.current) return;
     
-    switch (animation) {
-      case "blueprint":
-        return {
-          backgroundColor: `rgba(100, 149, 237, ${intensity * 0.7})`,
-          transform: `scale(${1 + intensity * 0.2})`,
-        };
-      case "measure":
-        return {
-          backgroundColor: `rgba(255, 222, 173, ${intensity * 0.7})`,
-          transform: `scaleX(${1 + intensity * 0.5})`,
-        };
-      case "cut":
-        return {
-          backgroundColor: `rgba(240, 128, 128, ${intensity * 0.7})`,
-          transform: `skewX(${intensity * 10}deg)`,
-        };
-      case "shape":
-        return {
-          backgroundColor: `rgba(222, 184, 135, ${intensity * 0.7})`,
-          borderRadius: `${intensity * 20}%`,
-        };
-      case "drill":
-        return {
-          backgroundColor: `rgba(169, 169, 169, ${intensity * 0.7})`,
-          transform: `rotate(${intensity * 360}deg)`,
-        };
-      case "assemble":
-        return {
-          backgroundColor: `rgba(144, 238, 144, ${intensity * 0.7})`,
-          transform: `translate(${intensity * 10}px, ${-intensity * 10}px)`,
-        };
-      case "hammer":
-        return {
-          backgroundColor: `rgba(210, 180, 140, ${intensity * 0.7})`,
-          transform: `translateY(${Math.sin(frame * 0.3) * 10}px)`,
-        };
-      case "polish":
-        return {
-          backgroundColor: `rgba(255, 215, 0, ${intensity * 0.7})`,
-          boxShadow: `0 0 ${intensity * 20}px rgba(255, 215, 0, ${intensity})`,
-        };
-      default:
-        return {};
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const particles = [];
+    const particleCount = 50;
+    
+    // Set canvas dimensions to match container
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 4 + 1,
+        color: getAnimationColor(animation),
+        speedX: Math.random() * 3 - 1.5,
+        speedY: Math.random() * 3 - 1.5
+      });
     }
+    
+    // Animation loop
+    let animationId;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        
+        p.x += p.speedX;
+        p.y += p.speedY;
+        
+        // Bounce off edges
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+      }
+      
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+    };
+  }, [showParticles, animation]);
+  
+  // Get color based on animation type
+  const getAnimationColor = (animationType) => {
+    const colors = {
+      blueprint: 'rgba(100, 149, 237, 0.7)',
+      measure: 'rgba(255, 222, 173, 0.7)',
+      cut: 'rgba(240, 128, 128, 0.7)',
+      shape: 'rgba(222, 184, 135, 0.7)',
+      drill: 'rgba(169, 169, 169, 0.7)',
+      assemble: 'rgba(144, 238, 144, 0.7)',
+      hammer: 'rgba(210, 180, 140, 0.7)',
+      polish: 'rgba(255, 215, 0, 0.7)'
+    };
+    
+    return colors[animationType] || 'rgba(200, 200, 200, 0.7)';
   };
   
   return (
-    <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg mb-4 bg-gray-100">
-      {stepImage && (
-        <img 
-          src={stepImage} 
-          alt={animation || "carpentry step"} 
+    <div className="relative w-full h-72 flex items-center justify-center overflow-hidden rounded-lg mb-4 bg-gray-100">
+      {videoUrl && (
+        <video 
+          ref={videoRef}
+          src={videoUrl}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: isPlaying ? 0.7 : 1 }}
+          loop
+          muted
+          playsInline
         />
       )}
       
-      {isPlaying && (
-        <div
-          className="absolute w-24 h-24 z-10 transition-all duration-100"
-          style={getAnimationStyle()}
-        ></div>
+      {showParticles && (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+        />
       )}
       
-      <div className="absolute top-2 left-2 text-xs bg-black/50 text-white px-2 py-1 rounded">
+      <div className="absolute top-2 left-2 text-xs bg-black/50 text-white px-2 py-1 rounded z-20">
         {animation ? animation.charAt(0).toUpperCase() + animation.slice(1) : ""}
       </div>
+      
+      {isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="bg-primary text-white text-lg font-bold px-4 py-2 rounded-full animate-bounce">
+            {animation?.toUpperCase()}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -237,6 +263,7 @@ export function CarpentryGame() {
             toast({
               title: "Project Completed",
               description: "You've completed all carpentry steps!",
+              variant: "success"
             });
           }
         }, 3000);
@@ -261,29 +288,41 @@ export function CarpentryGame() {
   }, [transcript, currentStep, isListening, stopListening, toast]);
 
   return (
-    <Card className="p-6 max-w-2xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-4">Carpentry Training</h2>
+    <Card className="p-6 max-w-2xl mx-auto mt-10 bg-gradient-to-br from-white to-blue-50 shadow-xl border-0">
+      <h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">Carpentry Training</h2>
       
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Voice Commands</h3>
-        <ul className="space-y-2 text-sm text-gray-600">
-          <li>• Say "<span className="text-primary">{carpentrySteps[currentStep].command}</span>" to complete the current step</li>
-          <li>• "What tools do I need?"</li>
-          <li>• "Explain the details"</li>
-          <li>• "What should I say?" for help</li>
+        <ul className="space-y-2 text-sm text-gray-600 bg-white/60 p-3 rounded-lg">
+          <li className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            Say "<span className="text-primary font-medium">{carpentrySteps[currentStep].command}</span>" to complete the current step
+          </li>
+          <li className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            "What tools do I need?"
+          </li>
+          <li className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            "Explain the details"
+          </li>
+          <li className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            "What should I say?" for help
+          </li>
         </ul>
       </div>
 
-      {/* Enhanced animation area with images */}
+      {/* Enhanced animation area with videos */}
       <Animation 
-        animation={currentAnimation} 
+        animation={currentAnimation || carpentrySteps[currentStep]?.animation} 
         isPlaying={isAnimationPlaying} 
-        stepImage={carpentrySteps[currentStep]?.imageUrl}
+        videoUrl={carpentrySteps[currentStep]?.videoUrl}
       />
 
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Current Step</h3>
-        <div className="bg-primary/5 p-4 rounded-lg">
+        <div className="bg-primary/5 p-4 rounded-lg transform transition-all hover:scale-[1.01] border border-primary/10">
           <div className="flex items-center gap-2">
             {currentStep < carpentrySteps.length && 
               React.createElement(carpentrySteps[currentStep].icon, { className: "w-5 h-5 text-primary" })}
@@ -304,26 +343,32 @@ export function CarpentryGame() {
 
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Completed Steps</h3>
-        {completed.length === 0 ? (
-          <p className="text-sm text-gray-500 italic">No steps completed yet. Start with "Show me the blueprint"</p>
-        ) : (
-          <ul className="space-y-2">
-            {completed.map((step, index) => (
-              <li key={index} className="flex items-center text-green-600">
-                <span className="mr-2">✓</span>
-                {step}
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="bg-white/60 rounded-lg p-2">
+          {completed.length === 0 ? (
+            <p className="text-sm text-gray-500 italic p-2">No steps completed yet. Start with "Show me the blueprint"</p>
+          ) : (
+            <ul className="space-y-1">
+              {completed.map((step, index) => (
+                <li key={index} className="flex items-center text-green-600 bg-green-50 px-3 py-2 rounded-md">
+                  <span className="mr-2 flex-shrink-0">✓</span>
+                  {step}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
         <Button
           onClick={() => (isListening ? stopListening() : startListening())}
-          className={isListening ? "bg-secondary" : "bg-primary"}
+          className={`${isListening ? "bg-secondary" : "bg-primary"} relative overflow-hidden group`}
         >
-          {isListening ? "Stop Listening" : "Start Speaking"}
+          <span className="relative z-10">
+            {isListening ? "Stop Listening" : "Start Speaking"}
+          </span>
+          <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></span>
+          <span className={`absolute inset-0 ${isListening ? 'bg-green-600' : 'bg-blue-600'} transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left`}></span>
         </Button>
 
         <Button 
@@ -332,20 +377,28 @@ export function CarpentryGame() {
             setDisplayPrompt(`Try saying: "${carpentrySteps[currentStep].command}"`);
             setTimeout(() => setDisplayPrompt(""), 5000);
           }}
+          className="group relative"
         >
-          Show Hint
+          <span>Show Hint</span>
+          <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform"></span>
         </Button>
       </div>
 
       {isListening && (
-        <p className="text-center mt-4 text-sm text-gray-600">
-          Listening... Say a command!
-        </p>
+        <div className="text-center mt-4 text-sm">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-1 rounded-full">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+            </span>
+            <p>Listening... Say a command!</p>
+          </div>
+        </div>
       )}
       
       {transcript && (
-        <p className="text-center mt-2 text-sm text-gray-600">
-          Heard: {transcript}
+        <p className="text-center mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md border border-gray-100">
+          Heard: <span className="font-medium">{transcript}</span>
         </p>
       )}
     </Card>

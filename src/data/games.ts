@@ -3,10 +3,10 @@ import { QuizGame } from "@/components/games/QuizGame";
 import { CodingGame } from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
-import { StoryBuilderGame } from "@/components/games/StoryBuilderGame";
-import { RhythmMasterGame } from "@/components/games/RhythmMasterGame";
+import { ColorExplorerGame } from "@/components/games/ColorExplorerGame";
+import { AnimalSoundsGame } from "@/components/games/AnimalSoundsGame";
 import { 
-  BookOpen, Code, Hammer, Heart, Music, BookType, Baby
+  BookOpen, Code, Hammer, Heart, Palette, BirdIcon, Baby
 } from "lucide-react";
 import { GameType } from "@/types/game";
 
@@ -52,23 +52,23 @@ export const games: GameType[] = [
     category: "skills"
   },
   { 
-    id: "storybuilder", 
-    title: "Story Builder", 
-    component: StoryBuilderGame,
-    image: "https://images.unsplash.com/photo-1512081409002-5af286fe5f87",
-    description: "Create imaginative stories with your voice",
-    instructions: "Welcome to Story Builder! Listen to the beginning of a story, then continue it using your voice. Be creative and add exciting parts to the adventure. The game will respond to your ideas and build a complete story together with you.",
-    icon: BookType,
+    id: "colorexplorer", 
+    title: "Color Explorer", 
+    component: ColorExplorerGame,
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150",
+    description: "Learn colors through exciting voice interactions",
+    instructions: "Welcome to Color Explorer! Look at the color displayed and say its name. Learn fun facts about colors while playing. If you need help, you can use the hint button to see the first letter of the color.",
+    icon: Palette,
     category: "kids"
   },
   { 
-    id: "rhythmmaster", 
-    title: "Rhythm Master", 
-    component: RhythmMasterGame,
-    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
-    description: "Learn music patterns and notes by repeating rhythms",
-    instructions: "Welcome to Rhythm Master! Listen carefully to the musical pattern played, then repeat it using your voice by saying the note names (like 'Do Re Mi'). Match the sequence correctly to unlock new instruments and advance to more complex patterns.",
-    icon: Music,
+    id: "animalsounds", 
+    title: "Animal Sounds", 
+    component: AnimalSoundsGame,
+    image: "https://images.unsplash.com/photo-1511275539165-cc46b1ee89bf",
+    description: "Identify animals by the sounds they make",
+    instructions: "Welcome to Animal Sounds! Listen to the sound played and say which animal makes it. Learn fascinating animal facts with each correct answer. The game will give you hints if needed.",
+    icon: BirdIcon,
     category: "kids"
   }
 ];
