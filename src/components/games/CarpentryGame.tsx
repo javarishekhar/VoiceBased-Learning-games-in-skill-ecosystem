@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Hammer, Ruler, Scissors, PaintBucket, Cylinder, Wrench, Drill, Sandpaper } from "lucide-react";
+import { Hammer, Ruler, Scissors, PaintBucket, Cylinder, Wrench, Drill } from "lucide-react";
 
 // Define the carpentry steps based on the requested flow
 const carpentrySteps = [
@@ -44,7 +43,7 @@ const carpentrySteps = [
     details: "Smooth all cut edges with sandpaper",
     tools: ["sandpaper", "sanding block"],
     command: "smooth the edges",
-    icon: Sandpaper,
+    icon: Ruler,
     animation: "shape",
     imageUrl: "https://images.unsplash.com/photo-1622979535239-b2af807546bb?w=600&auto=format"
   },
