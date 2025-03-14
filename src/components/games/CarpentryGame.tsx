@@ -1,7 +1,8 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Hammer, Ruler, Scissors, Tool, PaintBucket, Cylinder } from "lucide-react";
 
@@ -171,9 +172,15 @@ const Animation = ({ animation, isPlaying }) => {
   );
 };
 
+// Helper function to render the step icon dynamically
+const StepIcon = ({ step }) => {
+  const IconComponent = step.icon;
+  return <IconComponent className="w-5 h-5 text-primary" />;
+};
+
 export function CarpentryGame() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [completed, setCompleted] = useState<string[]>([]);
+  const [completed, setCompleted] = useState([]);
   const [displayPrompt, setDisplayPrompt] = useState("");
   const [isAnimationPlaying, setIsAnimationPlaying] = useState(false);
   const [currentAnimation, setCurrentAnimation] = useState("");
@@ -240,7 +247,6 @@ export function CarpentryGame() {
     }
   }, [transcript, currentStep, isListening, stopListening, toast]);
 
-  // Fixed the JSX issue by properly using the Card component
   return (
     <div className="p-6 max-w-2xl mx-auto mt-10 rounded-lg border bg-card text-card-foreground shadow-sm">
       <h2 className="text-2xl font-bold mb-4">Carpentry Training</h2>
@@ -266,7 +272,7 @@ export function CarpentryGame() {
         <div className="bg-primary/5 p-4 rounded-lg">
           <div className="flex items-center gap-2">
             {currentStep < carpentrySteps.length && 
-              <carpentrySteps[currentStep].icon className="w-5 h-5 text-primary" />}
+              <StepIcon step={carpentrySteps[currentStep]} />}
             <p className="text-xl text-primary font-medium">
               {currentStep < carpentrySteps.length ? carpentrySteps[currentStep].name : "All steps completed!"}
             </p>
