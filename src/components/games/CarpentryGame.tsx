@@ -1,10 +1,10 @@
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Hammer, Ruler, Scissors, Tool, PaintBucket, Cylinder } from "lucide-react";
+import { Hammer, Ruler, Scissors, PaintBucket, Cylinder, Wrench, Drill, Sandpaper } from "lucide-react";
 
 // Define the carpentry steps based on the requested flow
 const carpentrySteps = [
@@ -15,7 +15,8 @@ const carpentrySteps = [
     tools: ["blueprint", "glasses"],
     command: "show me the blueprint",
     icon: Cylinder,
-    animation: "blueprint"
+    animation: "blueprint",
+    imageUrl: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=600&auto=format"
   },
   {
     id: "measure",
@@ -24,7 +25,8 @@ const carpentrySteps = [
     tools: ["measuring tape", "pencil"],
     command: "measure 10 inches",
     icon: Ruler,
-    animation: "measure"
+    animation: "measure",
+    imageUrl: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&auto=format"
   },
   {
     id: "cut",
@@ -33,7 +35,8 @@ const carpentrySteps = [
     tools: ["saw", "clamps"],
     command: "cut the wood",
     icon: Scissors,
-    animation: "cut"
+    animation: "cut",
+    imageUrl: "https://images.unsplash.com/photo-1598301257982-0cf014dabbcd?w=600&auto=format"
   },
   {
     id: "shape",
@@ -41,8 +44,9 @@ const carpentrySteps = [
     details: "Smooth all cut edges with sandpaper",
     tools: ["sandpaper", "sanding block"],
     command: "smooth the edges",
-    icon: Tool,
-    animation: "shape"
+    icon: Sandpaper,
+    animation: "shape",
+    imageUrl: "https://images.unsplash.com/photo-1622979535239-b2af807546bb?w=600&auto=format"
   },
   {
     id: "drill",
@@ -50,8 +54,9 @@ const carpentrySteps = [
     details: "Drill holes for screws or nails",
     tools: ["drill", "drill bits"],
     command: "drill the holes",
-    icon: Tool,
-    animation: "drill"
+    icon: Drill,
+    animation: "drill",
+    imageUrl: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&auto=format"
   },
   {
     id: "assemble",
@@ -59,8 +64,9 @@ const carpentrySteps = [
     details: "Join the pieces according to the plan",
     tools: ["screwdriver", "screws", "wood glue"],
     command: "assemble the parts",
-    icon: Tool,
-    animation: "assemble"
+    icon: Wrench,
+    animation: "assemble",
+    imageUrl: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&auto=format"
   },
   {
     id: "secure",
@@ -69,7 +75,8 @@ const carpentrySteps = [
     tools: ["hammer", "nails"],
     command: "hammer the nails",
     icon: Hammer,
-    animation: "hammer"
+    animation: "hammer",
+    imageUrl: "https://images.unsplash.com/photo-1586864387789-628af9feed72?w=600&auto=format"
   },
   {
     id: "finish",
@@ -78,12 +85,13 @@ const carpentrySteps = [
     tools: ["finish", "brush", "cloth"],
     command: "apply polish",
     icon: PaintBucket,
-    animation: "polish"
+    animation: "polish",
+    imageUrl: "https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?w=600&auto=format"
   }
 ];
 
-// Animation component
-const Animation = ({ animation, isPlaying }) => {
+// Animation component with enhanced visuals
+const Animation = ({ animation, isPlaying, stepImage }) => {
   const [frame, setFrame] = useState(0);
   const animationRef = useRef(null);
   
@@ -160,12 +168,24 @@ const Animation = ({ animation, isPlaying }) => {
   };
   
   return (
-    <div className="relative w-full h-32 flex items-center justify-center overflow-hidden rounded-lg mb-4">
-      <div
-        className="absolute w-16 h-16 transition-all duration-100"
-        style={getAnimationStyle()}
-      ></div>
-      <div className="absolute top-2 left-2 text-xs text-gray-600">
+    <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg mb-4 bg-gray-100">
+      {stepImage && (
+        <img 
+          src={stepImage} 
+          alt={animation || "carpentry step"} 
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: isPlaying ? 0.7 : 1 }}
+        />
+      )}
+      
+      {isPlaying && (
+        <div
+          className="absolute w-24 h-24 z-10 transition-all duration-100"
+          style={getAnimationStyle()}
+        ></div>
+      )}
+      
+      <div className="absolute top-2 left-2 text-xs bg-black/50 text-white px-2 py-1 rounded">
         {animation ? animation.charAt(0).toUpperCase() + animation.slice(1) : ""}
       </div>
     </div>
@@ -201,7 +221,7 @@ export function CarpentryGame() {
         setCurrentAnimation(carpentrySteps[currentStep].animation);
         setIsAnimationPlaying(true);
         
-        // Reset animation after 2 seconds
+        // Reset animation after 3 seconds
         setTimeout(() => {
           setIsAnimationPlaying(false);
           
@@ -220,7 +240,7 @@ export function CarpentryGame() {
               description: "You've completed all carpentry steps!",
             });
           }
-        }, 2000);
+        }, 3000);
       } else if (command.includes("what tools") || command.includes("tools needed")) {
         stopListening();
         toast({
@@ -255,10 +275,11 @@ export function CarpentryGame() {
         </ul>
       </div>
 
-      {/* Animation area */}
+      {/* Enhanced animation area with images */}
       <Animation 
         animation={currentAnimation} 
         isPlaying={isAnimationPlaying} 
+        stepImage={carpentrySteps[currentStep]?.imageUrl}
       />
 
       <div className="mb-6">
