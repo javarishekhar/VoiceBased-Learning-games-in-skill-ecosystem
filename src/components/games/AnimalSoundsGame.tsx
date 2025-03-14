@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  Volume2, RefreshCw, Sparkles, Rabbit, Dog, Cat, Bird, Fish, Turtle, Frog, Cow 
+  Volume2, RefreshCw, Sparkles, Rabbit, Dog, Cat, Bird, Fish, Turtle, PiggyBank, Mouse 
 } from "lucide-react";
 
 const animalChallenges = [
@@ -40,7 +41,7 @@ const animalChallenges = [
     sound: "moo",
     alternativeSounds: [],
     funFact: "Cows have best friends and get stressed when they are separated!",
-    icon: Cow,
+    icon: PiggyBank, // Replaced Cow with PiggyBank
     soundUrl: "https://assets.mixkit.co/active_storage/sfx/2400/2400-preview.mp3",
     animationColor: "#6B7280"
   },
@@ -49,7 +50,7 @@ const animalChallenges = [
     sound: "ribbit",
     alternativeSounds: ["croak"],
     funFact: "Some frogs can jump over 20 times their body length in one hop!",
-    icon: Frog,
+    icon: Mouse, // Replaced Frog with Mouse
     soundUrl: "https://assets.mixkit.co/active_storage/sfx/2399/2399-preview.mp3",
     animationColor: "#10B981"
   },
