@@ -11,4 +11,8 @@ export interface GameType {
   instructions: string;
   icon: LucideIcon;
   category: string;
+  difficulty?: "easy" | "medium" | "hard";
+  estimatedTime?: string;
+  ageRange?: string;
+  tags?: string[];
 }
