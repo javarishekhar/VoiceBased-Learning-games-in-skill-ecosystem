@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,6 @@ import {
   Volume2, RefreshCw, Sparkles, Rabbit, Dog, Cat, Bird, Fish, Turtle, Frog, Cow 
 } from "lucide-react";
 
-// Define animal challenges
 const animalChallenges = [
   {
     name: "dog",
@@ -61,7 +59,7 @@ const animalChallenges = [
     alternativeSounds: ["splash", "bubble"],
     funFact: "Fish communicate with each other by grinding their teeth or rubbing body parts together!",
     icon: Fish,
-    soundUrl: "https://assets.mixkit.co/active_storage/sfx/2365/2365-preview.mp3", // bubbling sound
+    soundUrl: "https://assets.mixkit.co/active_storage/sfx/2365/2365-preview.mp3",
     animationColor: "#0EA5E9"
   },
   {
@@ -70,7 +68,7 @@ const animalChallenges = [
     alternativeSounds: ["sniff", "squeak"],
     funFact: "Rabbits jump and twist in the air when they're happy - it's called a 'binky'!",
     icon: Rabbit,
-    soundUrl: "https://assets.mixkit.co/active_storage/sfx/2686/2686-preview.mp3", // hopping sound
+    soundUrl: "https://assets.mixkit.co/active_storage/sfx/2686/2686-preview.mp3",
     animationColor: "#F59E0B"
   },
   {
@@ -79,12 +77,11 @@ const animalChallenges = [
     alternativeSounds: [],
     funFact: "Some turtles can live for over 100 years, making them one of the longest living animals!",
     icon: Turtle,
-    soundUrl: "https://assets.mixkit.co/active_storage/sfx/1686/1686-preview.mp3", // slow movement sound
+    soundUrl: "https://assets.mixkit.co/active_storage/sfx/1686/1686-preview.mp3",
     animationColor: "#34D399"
   }
 ];
 
-// Animation component for animals
 const AnimalAnimation = ({ animal, isPlaying }) => {
   const canvasRef = useRef(null);
   
@@ -94,14 +91,11 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
-    // Set canvas dimensions
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
-    // Get animation color
     const colorHex = animal?.animationColor || "#4F46E5";
     
-    // Convert hex to rgba
     const hexToRgba = (hex, alpha = 1) => {
       const r = parseInt(hex.slice(1, 3), 16);
       const g = parseInt(hex.slice(3, 5), 16);
@@ -109,7 +103,6 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
     
-    // Create particles based on animal
     const particles = [];
     const particleCount = 120;
     
@@ -125,11 +118,10 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
         speedX: (Math.random() - 0.5) * 2,
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.1,
-        shape: Math.floor(Math.random() * 3) // 0: circle, 1: square, 2: triangle
+        shape: Math.floor(Math.random() * 3)
       });
     }
     
-    // Animation loop
     let animationId;
     
     const drawParticle = (p) => {
@@ -139,15 +131,12 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
       ctx.fillStyle = p.color;
       
       if (p.shape === 0) {
-        // Circle
         ctx.beginPath();
         ctx.arc(0, 0, p.size, 0, Math.PI * 2);
         ctx.fill();
       } else if (p.shape === 1) {
-        // Square (paw print like)
         ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
       } else {
-        // Triangle
         ctx.beginPath();
         ctx.moveTo(0, -p.size/2);
         ctx.lineTo(-p.size/2, p.size/2);
@@ -169,13 +158,11 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
         p.x += p.speedX;
         p.rotation += p.rotationSpeed;
         
-        // Reset particle when it goes off top
         if (p.y < -p.size) {
           p.y = canvas.height + p.size;
           p.x = Math.random() * canvas.width;
         }
         
-        // Bounce off sides
         if (p.x < -p.size) p.speedX = Math.abs(p.speedX);
         if (p.x > canvas.width + p.size) p.speedX = -Math.abs(p.speedX);
       });
@@ -203,7 +190,7 @@ const AnimalAnimation = ({ animal, isPlaying }) => {
 export function AnimalSoundsGame() {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [score, setScore] = useState(0);
-  const [gameState, setGameState] = useState("waiting"); // waiting, listening, correct, incorrect
+  const [gameState, setGameState] = useState("waiting");
   const [showAnimation, setShowAnimation] = useState(false);
   const [soundPlayed, setSoundPlayed] = useState(false);
   const [completedAnimals, setCompletedAnimals] = useState<string[]>([]);
@@ -211,7 +198,6 @@ export function AnimalSoundsGame() {
   const { toast } = useToast();
   const audioRef = useRef(null);
   
-  // Function to play animal sound
   const playAnimalSound = () => {
     const animal = animalChallenges[currentChallenge];
     
@@ -228,7 +214,6 @@ export function AnimalSoundsGame() {
       setSoundPlayed(true);
       setGameState("waiting");
       
-      // Display toast with hint
       toast({
         title: "What animal makes this sound?",
         description: `Listen carefully and tell me what animal it is!`,
@@ -236,22 +221,18 @@ export function AnimalSoundsGame() {
     }
   };
   
-  // Process voice commands
   useEffect(() => {
     if (transcript && isListening && soundPlayed) {
       const answer = transcript.toLowerCase().trim();
       const animal = animalChallenges[currentChallenge];
       
-      // Check if answer matches animal name
       if (answer.includes(animal.name)) {
-        // Correct answer
         stopListening();
         setGameState("correct");
         setShowAnimation(true);
         setScore(prev => prev + 1);
         setCompletedAnimals(prev => [...prev, animal.name]);
         
-        // Play success sound
         const successAudio = new Audio("https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3");
         successAudio.volume = 0.3;
         successAudio.play();
@@ -262,24 +243,20 @@ export function AnimalSoundsGame() {
           variant: "default",
         });
         
-        // Reset after animation
         setTimeout(() => {
           setShowAnimation(false);
           setGameState("waiting");
           setSoundPlayed(false);
           
-          // Move to next challenge or end game
           if (currentChallenge < animalChallenges.length - 1) {
             setCurrentChallenge(prev => prev + 1);
           } else {
-            // Game complete
             toast({
               title: "Game Complete!",
               description: `Amazing! You identified ${score + 1} animal sounds!`,
               variant: "default",
             });
             
-            // Reset game after short delay
             setTimeout(() => {
               setCurrentChallenge(0);
               setCompletedAnimals([]);
@@ -287,9 +264,7 @@ export function AnimalSoundsGame() {
             }, 3000);
           }
         }, 3000);
-        
       } else if (answer.length > 2) {
-        // Check if they said the sound instead of the animal
         const isSound = animal.sound === answer || 
                         animal.alternativeSounds.some(sound => answer.includes(sound));
         
@@ -303,7 +278,6 @@ export function AnimalSoundsGame() {
           return;
         }
         
-        // Incorrect answer
         stopListening();
         setGameState("incorrect");
         setShowAnimation(false);
@@ -314,7 +288,6 @@ export function AnimalSoundsGame() {
           variant: "destructive",
         });
         
-        // Reset after short delay
         setTimeout(() => {
           setGameState("waiting");
           setSoundPlayed(false);
@@ -323,7 +296,6 @@ export function AnimalSoundsGame() {
     }
   }, [transcript, currentChallenge, isListening, stopListening, toast, score, soundPlayed]);
   
-  // Reset the game
   const resetGame = () => {
     setCurrentChallenge(0);
     setScore(0);
@@ -336,7 +308,6 @@ export function AnimalSoundsGame() {
     });
   };
   
-  // Current animal
   const animal = animalChallenges[currentChallenge];
   const AnimalIcon = animal.icon;
   
@@ -363,14 +334,12 @@ export function AnimalSoundsGame() {
         </p>
       </div>
       
-      {/* Animal display area with animations */}
       <div className="relative mb-6 h-60 rounded-xl overflow-hidden bg-gradient-to-b from-amber-50 to-white">
         <AnimalAnimation 
           animal={animal} 
           isPlaying={showAnimation} 
         />
         
-        {/* Central content */}
         <div className="absolute inset-0 flex items-center justify-center z-20">
           {gameState === "correct" ? (
             <div className="text-center">
@@ -397,7 +366,6 @@ export function AnimalSoundsGame() {
         </div>
       </div>
       
-      {/* Progress indicators */}
       <div className="flex flex-wrap gap-2 mb-4 justify-center">
         {animalChallenges.map((animal, idx) => (
           <div 
@@ -466,7 +434,6 @@ export function AnimalSoundsGame() {
         </p>
       )}
       
-      {/* Sound hint for young kids */}
       {gameState === "waiting" && soundPlayed && (
         <div className="mt-4 bg-white/80 p-3 rounded-lg border border-amber-200 animate-fade-in">
           <p className="text-sm text-center text-gray-700">
@@ -476,7 +443,6 @@ export function AnimalSoundsGame() {
         </div>
       )}
       
-      {/* Fun fact appears when correct */}
       {gameState === "correct" && (
         <div className="mt-4 bg-white/80 p-3 rounded-lg border border-amber-200 animate-fade-in">
           <p className="text-sm text-gray-700 flex items-start">

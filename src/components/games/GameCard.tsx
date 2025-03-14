@@ -4,9 +4,6 @@ import { Card } from "@/components/ui/card";
 import { GameType } from "@/types/game";
 import { motion } from "framer-motion";
 
-// Add framer-motion dependency for smooth animations
-<lov-add-dependency>framer-motion@^11.1.0</lov-add-dependency>
-
 interface GameCardProps {
   game: GameType;
   onSelect: (id: string) => void;

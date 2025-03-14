@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Hammer, Ruler, Scissors, PaintBucket, Cylinder, Wrench, Drill } from "lucide-react";
 
-// Define the carpentry steps based on the requested flow
 const carpentrySteps = [
   {
     id: "blueprint",
@@ -90,7 +88,6 @@ const carpentrySteps = [
   }
 ];
 
-// Animation component with enhanced visuals
 const Animation = ({ animation, isPlaying, videoUrl }) => {
   const videoRef = useRef(null);
   const [showParticles, setShowParticles] = useState(false);
@@ -110,7 +107,6 @@ const Animation = ({ animation, isPlaying, videoUrl }) => {
     }
   }, [isPlaying]);
   
-  // Canvas animation for particles
   useEffect(() => {
     if (!showParticles || !canvasRef.current) return;
     
@@ -119,11 +115,9 @@ const Animation = ({ animation, isPlaying, videoUrl }) => {
     const particles = [];
     const particleCount = 50;
     
-    // Set canvas dimensions to match container
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
-    // Create particles
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -135,7 +129,6 @@ const Animation = ({ animation, isPlaying, videoUrl }) => {
       });
     }
     
-    // Animation loop
     let animationId;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -151,7 +144,6 @@ const Animation = ({ animation, isPlaying, videoUrl }) => {
         p.x += p.speedX;
         p.y += p.speedY;
         
-        // Bounce off edges
         if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
         if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
       }
@@ -166,7 +158,6 @@ const Animation = ({ animation, isPlaying, videoUrl }) => {
     };
   }, [showParticles, animation]);
   
-  // Get color based on animation type
   const getAnimationColor = (animationType) => {
     const colors = {
       blueprint: 'rgba(100, 149, 237, 0.7)',
@@ -231,7 +222,6 @@ export function CarpentryGame() {
       const command = transcript.toLowerCase().trim();
       console.log("Processing carpentry command:", command);
       
-      // Check for step-specific command
       const currentStepCommand = carpentrySteps[currentStep].command.toLowerCase();
       const currentStepName = carpentrySteps[currentStep].name.toLowerCase();
       
@@ -242,15 +232,12 @@ export function CarpentryGame() {
         
         stopListening();
         
-        // Play animation for the current step
         setCurrentAnimation(carpentrySteps[currentStep].animation);
         setIsAnimationPlaying(true);
         
-        // Reset animation after 3 seconds
         setTimeout(() => {
           setIsAnimationPlaying(false);
           
-          // Mark step as completed and move to next step
           setCompleted(prev => [...prev, carpentrySteps[currentStep].name]);
           
           if (currentStep < carpentrySteps.length - 1) {
@@ -263,7 +250,7 @@ export function CarpentryGame() {
             toast({
               title: "Project Completed",
               description: "You've completed all carpentry steps!",
-              variant: "success"
+              variant: "default"
             });
           }
         }, 3000);
@@ -313,7 +300,6 @@ export function CarpentryGame() {
         </ul>
       </div>
 
-      {/* Enhanced animation area with videos */}
       <Animation 
         animation={currentAnimation || carpentrySteps[currentStep]?.animation} 
         isPlaying={isAnimationPlaying} 
