@@ -1,11 +1,7 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { GameType } from "@/types/game";
 import { motion } from "framer-motion";
-
-// Add framer-motion dependency for smooth animations
-<lov-add-dependency>framer-motion@^11.1.0</lov-add-dependency>
 
 interface GameCardProps {
   game: GameType;
@@ -46,7 +42,6 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onSelect }) => {
         className="group p-6 hover:shadow-lg transition-all duration-300 cursor-pointer bg-white backdrop-blur relative overflow-hidden"
         onClick={() => onSelect(game.id)}
       >
-        {/* Game image with overlay */}
         <div className="aspect-video mb-4 overflow-hidden rounded-lg">
           <img 
             src={game.image} 
@@ -60,7 +55,6 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onSelect }) => {
           </div>
         </div>
         
-        {/* Game title and icon */}
         <div className="flex items-center gap-2 mb-2">
           <game.icon className="w-5 h-5 text-primary" />
           <h2 className="text-2xl font-semibold text-primary">{game.title}</h2>
@@ -68,7 +62,6 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onSelect }) => {
         
         <p className="text-gray-600 text-sm mb-4">{game.description}</p>
 
-        {/* Category badge */}
         <div className="flex justify-between items-center">
           <span className={`text-xs px-2 py-1 rounded-full ${category.bg} ${category.text}`}>
             {category.label}
@@ -83,7 +76,6 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onSelect }) => {
           </motion.div>
         </div>
         
-        {/* Play button overlay that appears on hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-lg">
           <motion.div 
             className="bg-white/90 rounded-full w-14 h-14 flex items-center justify-center"

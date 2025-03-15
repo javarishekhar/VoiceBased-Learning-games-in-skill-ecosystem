@@ -1,10 +1,9 @@
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, HeartPulse, Phone, ShieldCheck, Stethoscope, Thermometer, User } from "lucide-react";
+import { AlertCircle, CheckCircle2, HeartPulse, Phone, ShieldCheck, Stethoscope, Thermometer } from "lucide-react";
 
 const firstAidSteps = [
   {
@@ -84,7 +83,7 @@ export function FirstAidGame() {
             toast({
               title: "Training Completed",
               description: "You've completed all first aid steps!",
-              variant: "success"
+              variant: "default"
             });
           }
         }, 2000);
@@ -130,7 +129,6 @@ export function FirstAidGame() {
         </ul>
       </div>
 
-      {/* Video demonstration area */}
       <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg mb-6 bg-gray-100">
         {currentStep < firstAidSteps.length && (
           <video 
@@ -152,9 +150,7 @@ export function FirstAidGame() {
         {!isAnimating && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="bg-white/80 rounded-full p-4">
-              {currentStep < firstAidSteps.length && React.createElement(firstAidSteps[currentStep].icon, { 
-                className: "w-10 h-10 text-red-500" 
-              })}
+              {currentStep < firstAidSteps.length && <firstAidSteps[currentStep].icon className="w-10 h-10 text-red-500" />}
             </div>
           </div>
         )}
@@ -164,9 +160,7 @@ export function FirstAidGame() {
         <h3 className="text-lg font-semibold mb-2">Current Step</h3>
         <div className="bg-red-500/5 p-4 rounded-lg transform transition-all hover:scale-[1.01] border border-red-100">
           <div className="flex items-center gap-2">
-            {currentStep < firstAidSteps.length && React.createElement(firstAidSteps[currentStep].icon, { 
-              className: "w-5 h-5 text-red-500" 
-            })}
+            {currentStep < firstAidSteps.length && <firstAidSteps[currentStep].icon className="w-5 h-5 text-red-500" />}
             <p className="text-xl text-red-500 font-medium">
               {currentStep < firstAidSteps.length ? firstAidSteps[currentStep].name : "All steps completed!"}
             </p>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -263,7 +262,7 @@ export function CarpentryGame() {
             toast({
               title: "Project Completed",
               description: "You've completed all carpentry steps!",
-              variant: "success"
+              variant: "default"
             });
           }
         }, 3000);
