@@ -11,21 +11,21 @@ const carpentrySteps = [
     name: "Measure the wood",
     details: "Use a measuring tape to get accurate dimensions",
     tools: ["measuring tape", "pencil"],
-    animation: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=500",
+    animation: "/lovable-uploads/3533d798-6ecd-4840-8d7f-03eab519abae.png",
     alt: "Person measuring wood with a tape measure"
   },
   {
     name: "Mark cutting lines",
     details: "Use a straight edge and pencil to mark your cuts",
     tools: ["pencil", "straight edge", "square"],
-    animation: "https://images.unsplash.com/photo-1581788604067-720aea4213be?q=80&w=500",
+    animation: "/lovable-uploads/70b909c8-7da9-4f15-9154-b47ce62e8412.png",
     alt: "Marking cutting lines on wood"
   },
   {
     name: "Cut the wood",
     details: "Carefully cut along the marked lines",
     tools: ["saw", "clamps"],
-    animation: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=500",
+    animation: "/lovable-uploads/a8ab20ca-9a89-46d9-bf40-7e5cd72588fa.png",
     alt: "Cutting wood with a saw"
   },
   {
