@@ -11,45 +11,48 @@ const carpentrySteps = [
     name: "Measure the wood",
     details: "Use a measuring tape to get accurate dimensions",
     tools: ["measuring tape", "pencil"],
-    animation: "https://images.unsplash.com/photo-1567361808960-dec9cb578182?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=500",
     alt: "Person measuring wood with a tape measure"
   },
   {
     name: "Mark cutting lines",
     details: "Use a straight edge and pencil to mark your cuts",
     tools: ["pencil", "straight edge", "square"],
-    animation: "https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1581788604067-720aea4213be?q=80&w=500",
     alt: "Marking cutting lines on wood"
   },
   {
     name: "Cut the wood",
     details: "Carefully cut along the marked lines",
     tools: ["saw", "clamps"],
-    animation: "https://images.unsplash.com/photo-1572372786078-b1bf1cb82356?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=500",
     alt: "Cutting wood with a saw"
   },
   {
     name: "Sand the edges",
     details: "Smooth all cut edges with sandpaper",
     tools: ["sandpaper", "sanding block"],
-    animation: "https://images.unsplash.com/photo-1580893246395-52aead8960dc?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=500",
     alt: "Sanding wood edges"
   },
   {
     name: "Assemble pieces",
     details: "Join the pieces according to the plan",
     tools: ["screwdriver", "screws", "wood glue"],
-    animation: "https://images.unsplash.com/photo-1598544962610-e04587e9c627?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1611207723722-af05035803b5?q=80&w=500",
     alt: "Assembling wooden pieces"
   },
   {
     name: "Apply finish",
     details: "Apply your chosen finish for protection",
     tools: ["finish", "brush", "cloth"],
-    animation: "https://images.unsplash.com/photo-1541850364054-9f8883060f5c?q=80&w=500",
+    animation: "https://images.unsplash.com/photo-1558346547-4439467bd1d5?q=80&w=500",
     alt: "Applying finish to wood"
   }
 ];
+
+// Voice commands illustration image
+const voiceCommandsImage = "https://images.unsplash.com/photo-1590660034981-35b4d92932c0?q=80&w=500";
 
 export function CarpentryGame() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -57,6 +60,7 @@ export function CarpentryGame() {
   const { transcript, isListening, startListening, stopListening } = useVoice();
   const { toast } = useToast();
   const [showAnimation, setShowAnimation] = useState(false);
+  const [showVoiceHelp, setShowVoiceHelp] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -110,6 +114,12 @@ export function CarpentryGame() {
           description: carpentrySteps[currentStep].details,
           variant: "default",
         });
+      } else if (command.includes("help") || command.includes("voice commands")) {
+        stopListening();
+        setShowVoiceHelp(true);
+        setTimeout(() => {
+          setShowVoiceHelp(false);
+        }, 6000);
       }
     }
   }, [transcript, currentStep, isListening, stopListening, toast]);
@@ -120,12 +130,26 @@ export function CarpentryGame() {
       
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Voice Commands</h3>
-        <ul className="space-y-2 text-sm text-gray-600">
-          <li>• Say the step name to complete it</li>
-          <li>• "What tools do I need?"</li>
-          <li>• "Explain the details"</li>
-          <li>• "Next step" or "Complete step"</li>
-        </ul>
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex-1">
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li>• Say the step name to complete it</li>
+              <li>• "What tools do I need?"</li>
+              <li>• "Explain the details"</li>
+              <li>• "Next step" or "Complete step"</li>
+              <li>• Say "Help" for voice commands</li>
+            </ul>
+          </div>
+          <div className="md:w-1/2">
+            <img 
+              src={voiceCommandsImage} 
+              alt="Voice commands illustration" 
+              className="rounded-lg shadow-md w-full h-auto object-cover"
+              onClick={() => setShowVoiceHelp(true)}
+            />
+            <p className="text-xs text-center mt-1 text-gray-500">Click image for voice command help</p>
+          </div>
+        </div>
       </div>
 
       <div className="mb-6">
@@ -155,6 +179,44 @@ export function CarpentryGame() {
             />
             <div className="p-4 bg-primary text-white text-center">
               <p>Performing: {carpentrySteps[currentStep].name}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {showVoiceHelp && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowVoiceHelp(false)}
+          >
+            <div className="bg-white rounded-lg p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
+              <h3 className="text-xl font-bold mb-4 text-center">Voice Commands</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="font-bold text-primary">"Measure the wood"</p>
+                  <p className="text-sm">Complete the current step</p>
+                </div>
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="font-bold text-primary">"Next step"</p>
+                  <p className="text-sm">Move to the next step</p>
+                </div>
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="font-bold text-primary">"What tools do I need?"</p>
+                  <p className="text-sm">Get required tools list</p>
+                </div>
+                <div className="bg-primary/10 p-3 rounded-lg">
+                  <p className="font-bold text-primary">"Explain details"</p>
+                  <p className="text-sm">Get step explanation</p>
+                </div>
+              </div>
+              <Button 
+                className="w-full mt-4" 
+                onClick={() => setShowVoiceHelp(false)}
+              >
+                Close
+              </Button>
             </div>
           </motion.div>
         )}
