@@ -1,224 +1,245 @@
-import React, { useState, useEffect } from "react";
-import { useVoice } from "@/contexts/VoiceContext";
+
+import React, { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, CheckCircle2, HeartPulse, Phone, ShieldCheck, Stethoscope, Thermometer } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Heart, Info } from "lucide-react";
+import { motion } from "framer-motion";
 
-const firstAidSteps = [
+interface Scenario {
+  id: string;
+  title: string;
+  description: string;
+  steps: string[];
+  correctOrder: number[];
+  videoUrl: string;
+}
+
+const scenarios: Scenario[] = [
   {
-    name: "Check the scene",
-    details: "Ensure the area is safe for you and the victim",
-    equipment: ["gloves", "mask"],
-    icon: AlertCircle,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/042/652/original/alerta2.mp4"
+    id: "1",
+    title: "CPR Procedure",
+    description: "Learn the proper steps for performing CPR on an adult.",
+    steps: [
+      "Check the scene for safety",
+      "Check for responsiveness",
+      "Call 911 or ask someone to do it",
+      "Check for breathing",
+      "Begin chest compressions",
+      "Give rescue breaths",
+      "Continue CPR until help arrives"
+    ],
+    correctOrder: [0, 1, 2, 3, 4, 5, 6],
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0"
   },
   {
-    name: "Call emergency services",
-    details: "Dial emergency number and provide location and situation",
-    equipment: ["phone"],
-    icon: Phone,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/494/original/typing-a-phone-number.mp4"
-  },
-  {
-    name: "Check breathing",
-    details: "Look, listen, and feel for breathing",
-    equipment: ["none"],
-    icon: HeartPulse,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/548/original/Medical-doctor-stethoscope-physical-heart-health-care.mp4"
-  },
-  {
-    name: "Control bleeding",
-    details: "Apply direct pressure to wounds",
-    equipment: ["bandages", "gauze", "gloves"],
-    icon: Thermometer,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/554/original/doctor-pulse.mp4"
-  },
-  {
-    name: "Treat for shock",
-    details: "Keep patient warm and elevate legs if possible",
-    equipment: ["blanket"],
-    icon: ShieldCheck,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/535/original/ECG_1.mp4"
-  },
-  {
-    name: "Monitor vital signs",
-    details: "Check pulse, breathing, and consciousness regularly",
-    equipment: ["watch", "notepad"],
-    icon: Stethoscope,
-    videoUrl: "https://static.videezy.com/system/resources/previews/000/044/617/original/heart-monitor.mp4"
+    id: "2",
+    title: "Treating a Burn",
+    description: "Learn how to properly treat first, second, and third-degree burns.",
+    steps: [
+      "Ensure the scene is safe",
+      "Cool the burn with cool running water",
+      "Remove jewelry and tight items",
+      "Cover with a sterile, non-stick bandage",
+      "Take pain medication if needed",
+      "Watch for signs of infection",
+      "Seek medical attention if severe"
+    ],
+    correctOrder: [0, 1, 2, 3, 4, 5, 6],
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0"
   }
 ];
 
-export function FirstAidGame() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [completed, setCompleted] = useState<string[]>([]);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const { transcript, isListening, startListening, stopListening } = useVoice();
-  const { toast } = useToast();
+const FirstAidGame = () => {
+  const [currentScenario, setCurrentScenario] = useState<Scenario>(scenarios[0]);
+  const [selectedSteps, setSelectedSteps] = useState<number[]>([]);
+  const [remainingSteps, setRemainingSteps] = useState<number[]>([...Array(scenarios[0].steps.length).keys()]);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
 
-  useEffect(() => {
-    if (transcript && isListening) {
-      const command = transcript.toLowerCase().trim();
-      console.log("Processing first aid command:", command);
-      
-      const currentStepLower = firstAidSteps[currentStep].name.toLowerCase();
-      if (command.includes(currentStepLower) || 
-          command.includes("next step") || 
-          command.includes("complete step")) {
-        stopListening();
-        setIsAnimating(true);
-        
-        setTimeout(() => {
-          setIsAnimating(false);
-          setCompleted(prev => [...prev, firstAidSteps[currentStep].name]);
-          
-          if (currentStep < firstAidSteps.length - 1) {
-            setCurrentStep(prev => prev + 1);
-            toast({
-              title: "Step Completed",
-              description: "Good job! Moving to next step.",
-            });
-          } else {
-            toast({
-              title: "Training Completed",
-              description: "You've completed all first aid steps!",
-              variant: "default"
-            });
-          }
-        }, 2000);
-      } else if (command.includes("what equipment") || command.includes("what do i need")) {
-        stopListening();
-        toast({
-          title: "Required Equipment",
-          description: firstAidSteps[currentStep].equipment.join(", "),
-        });
-      } else if (command.includes("details") || command.includes("explain")) {
-        stopListening();
-        toast({
-          title: "Step Details",
-          description: firstAidSteps[currentStep].details,
-        });
-      }
+  const handleStepClick = (index: number) => {
+    if (remainingSteps.includes(index)) {
+      setSelectedSteps([...selectedSteps, index]);
+      setRemainingSteps(remainingSteps.filter(i => i !== index));
     }
-  }, [transcript, currentStep, isListening, stopListening, toast]);
+  };
+
+  const handleSelectedStepClick = (index: number, position: number) => {
+    const updatedSelected = [...selectedSteps];
+    updatedSelected.splice(position, 1);
+    setSelectedSteps(updatedSelected);
+    setRemainingSteps([...remainingSteps, index].sort((a, b) => a - b));
+  };
+
+  const checkOrder = () => {
+    const isOrderCorrect = selectedSteps.every((step, i) => step === currentScenario.correctOrder[i]);
+    setIsCorrect(isOrderCorrect);
+    if (isOrderCorrect) {
+      setTimeout(() => {
+        setShowVideo(true);
+      }, 1500);
+    }
+  };
+
+  const resetScenario = () => {
+    setSelectedSteps([]);
+    setRemainingSteps([...Array(currentScenario.steps.length).keys()]);
+    setIsCorrect(null);
+    setShowVideo(false);
+  };
+
+  const changeScenario = (scenarioId: string) => {
+    const scenario = scenarios.find(s => s.id === scenarioId);
+    if (scenario) {
+      setCurrentScenario(scenario);
+      setSelectedSteps([]);
+      setRemainingSteps([...Array(scenario.steps.length).keys()]);
+      setIsCorrect(null);
+      setShowVideo(false);
+    }
+  };
 
   return (
-    <Card className="p-6 max-w-2xl mx-auto mt-10 bg-gradient-to-br from-white to-red-50 shadow-xl border-0">
-      <h2 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-primary">First Aid Training</h2>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-6 max-w-4xl mx-auto"
+    >
+      <h1 className="text-3xl font-bold text-primary mb-2 flex items-center">
+        <Heart className="mr-2 text-red-500" /> First Aid Training
+      </h1>
       
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Voice Commands</h3>
-        <ul className="space-y-2 text-sm text-gray-600 bg-white/60 p-3 rounded-lg">
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-            Say "<span className="text-red-500 font-medium">{firstAidSteps[currentStep].name}</span>" to complete the step
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-            "What equipment do I need?"
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-            "Explain the details"
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-            "Next step" or "Complete step"
-          </li>
-        </ul>
+      <p className="text-gray-600 mb-6">
+        Learn first aid procedures through interactive scenarios. Arrange the steps in the correct order.
+      </p>
+      
+      <div className="flex gap-4 mb-6 flex-wrap">
+        {scenarios.map((scenario) => (
+          <Button
+            key={scenario.id}
+            variant={currentScenario.id === scenario.id ? "default" : "outline"}
+            onClick={() => changeScenario(scenario.id)}
+            className="flex gap-2 items-center"
+          >
+            {scenario.title}
+          </Button>
+        ))}
       </div>
-
-      <div className="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg mb-6 bg-gray-100">
-        {currentStep < firstAidSteps.length && (
-          <video 
-            src={firstAidSteps[currentStep].videoUrl}
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay={isAnimating}
-            loop
-            muted
-            playsInline
-          />
-        )}
-        
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-        
-        <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded">
-          Step {currentStep + 1}: {currentStep < firstAidSteps.length ? firstAidSteps[currentStep].name : "Complete"}
-        </div>
-        
-        {!isAnimating && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-white/80 rounded-full p-4">
-              {currentStep < firstAidSteps.length && <firstAidSteps[currentStep].icon className="w-10 h-10 text-red-500" />}
+      
+      {isCorrect === true && (
+        <Alert variant="default" className="bg-green-100 border-green-300 mb-6">
+          <Info className="h-4 w-4 text-green-800" />
+          <AlertTitle className="text-green-800">Correct sequence!</AlertTitle>
+          <AlertDescription className="text-green-700">
+            Great job! You've mastered the correct sequence for this first aid procedure.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {isCorrect === false && (
+        <Alert variant="destructive" className="mb-6">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Incorrect sequence</AlertTitle>
+          <AlertDescription>
+            The order is not correct. Please try again.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {!showVideo ? (
+        <div className="grid md:grid-cols-2 gap-8">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">{currentScenario.title}</h2>
+            <p className="text-gray-600 mb-6">{currentScenario.description}</p>
+            
+            <h3 className="text-md font-medium mb-3">Your Sequence:</h3>
+            <div className="border rounded-md p-4 min-h-40 mb-4 bg-gray-50">
+              {selectedSteps.length === 0 ? (
+                <p className="text-gray-400 italic">Drag steps here in the correct order</p>
+              ) : (
+                <ol className="space-y-2">
+                  {selectedSteps.map((stepIndex, position) => (
+                    <motion.li 
+                      key={`selected-${stepIndex}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      onClick={() => handleSelectedStepClick(stepIndex, position)}
+                      className="p-2 border rounded bg-primary/10 cursor-pointer flex items-center"
+                    >
+                      <Badge className="mr-2">{position + 1}</Badge>
+                      {currentScenario.steps[stepIndex]}
+                    </motion.li>
+                  ))}
+                </ol>
+              )}
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Current Step</h3>
-        <div className="bg-red-500/5 p-4 rounded-lg transform transition-all hover:scale-[1.01] border border-red-100">
-          <div className="flex items-center gap-2">
-            {currentStep < firstAidSteps.length && <firstAidSteps[currentStep].icon className="w-5 h-5 text-red-500" />}
-            <p className="text-xl text-red-500 font-medium">
-              {currentStep < firstAidSteps.length ? firstAidSteps[currentStep].name : "All steps completed!"}
-            </p>
-          </div>
-          <p className="text-sm text-gray-600 mt-2">
-            {currentStep < firstAidSteps.length ? firstAidSteps[currentStep].details : "Great job!"}
-          </p>
+            
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={resetScenario}>Reset</Button>
+              <Button 
+                onClick={checkOrder} 
+                disabled={selectedSteps.length !== currentScenario.steps.length}
+              >
+                Check Order
+              </Button>
+            </div>
+          </Card>
+          
+          <Card className="p-6">
+            <h3 className="text-md font-medium mb-3">Available Steps:</h3>
+            <div className="border rounded-md p-4 min-h-40 bg-gray-50">
+              {remainingSteps.length === 0 ? (
+                <p className="text-gray-400 italic">All steps have been used</p>
+              ) : (
+                <ul className="space-y-2">
+                  {remainingSteps.map((stepIndex) => (
+                    <motion.li 
+                      key={`remaining-${stepIndex}`}
+                      whileHover={{ scale: 1.02 }}
+                      onClick={() => handleStepClick(stepIndex)}
+                      className="p-2 border rounded hover:bg-gray-100 cursor-pointer"
+                    >
+                      {currentScenario.steps[stepIndex]}
+                    </motion.li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            
+            <div className="mt-6">
+              <h3 className="text-md font-medium mb-2">Progress:</h3>
+              <Progress value={(selectedSteps.length / currentScenario.steps.length) * 100} className="h-2" />
+              <p className="text-sm text-gray-500 mt-2">
+                {selectedSteps.length} of {currentScenario.steps.length} steps arranged
+              </p>
+            </div>
+          </Card>
         </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Completed Steps</h3>
-        <div className="bg-white/60 rounded-lg p-2">
-          {completed.length === 0 ? (
-            <p className="text-sm text-gray-500 italic p-2">No steps completed yet</p>
-          ) : (
-            <ul className="space-y-1">
-              {completed.map((step, index) => (
-                <li key={index} className="flex items-center text-green-600 bg-green-50 px-3 py-2 rounded-md">
-                  <CheckCircle2 className="w-4 h-4 mr-2 flex-shrink-0" />
-                  {step}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Button
-          onClick={() => (isListening ? stopListening() : startListening())}
-          className={`${isListening ? "bg-secondary" : "bg-red-500"} relative overflow-hidden group`}
-          disabled={isAnimating}
-        >
-          <span className="relative z-10">
-            {isListening ? "Stop Listening" : "Start Speaking"}
-          </span>
-          <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></span>
-        </Button>
-      </div>
-
-      {isListening && (
-        <div className="text-center mt-4 text-sm">
-          <div className="inline-flex items-center gap-2 bg-red-50 text-red-600 px-3 py-1 rounded-full">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-            </span>
-            <p>Listening... Say a command!</p>
+      ) : (
+        <Card className="p-6">
+          <div className="mb-4 flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Demonstration Video</h2>
+            <Button variant="outline" size="sm" onClick={() => setShowVideo(false)}>
+              Back to Exercise
+            </Button>
           </div>
-        </div>
+          <div className="aspect-video rounded-lg overflow-hidden">
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src={currentScenario.videoUrl} 
+              title="First Aid Demonstration" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </Card>
       )}
-      
-      {transcript && (
-        <p className="text-center mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded-md border border-gray-100">
-          Heard: <span className="font-medium">{transcript}</span>
-        </p>
-      )}
-    </Card>
+    </motion.div>
   );
-}
+};
+
+export default FirstAidGame;
