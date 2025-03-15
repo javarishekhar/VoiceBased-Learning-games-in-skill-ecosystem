@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
 import { QuizGame } from "@/components/games/QuizGame";
-import { CodingGame } from "@/components/games/CodingGame";
+import CodingGame from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
