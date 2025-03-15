@@ -2,7 +2,7 @@
 import { QuizGame } from "@/components/games/QuizGame";
 import { CodingGame } from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
-import { FirstAidGame } from "@/components/games/FirstAidGame";
+import FirstAidGame from "@/components/games/FirstAidGame";
 import { ColorExplorerGame } from "@/components/games/ColorExplorerGame";
 import { AnimalSoundsGame } from "@/components/games/AnimalSoundsGame";
 import { 
