@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -32,27 +31,27 @@ const carpentrySteps = [
     name: "Sand the edges",
     details: "Smooth all cut edges with sandpaper",
     tools: ["sandpaper", "sanding block"],
-    animation: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=500",
+    animation: "/lovable-uploads/0bb4fe16-268a-4803-a5e1-19de50232852.png",
     alt: "Sanding wood edges"
   },
   {
     name: "Assemble pieces",
     details: "Join the pieces according to the plan",
     tools: ["screwdriver", "screws", "wood glue"],
-    animation: "https://images.unsplash.com/photo-1611207723722-af05035803b5?q=80&w=500",
+    animation: "/lovable-uploads/79c15857-4470-4524-a2ab-97554864eeb6.png",
     alt: "Assembling wooden pieces"
   },
   {
     name: "Apply finish",
     details: "Apply your chosen finish for protection",
     tools: ["finish", "brush", "cloth"],
-    animation: "https://images.unsplash.com/photo-1558346547-4439467bd1d5?q=80&w=500",
+    animation: "/lovable-uploads/2584966c-dd76-4f45-a660-86ae77111f84.png",
     alt: "Applying finish to wood"
   }
 ];
 
-// Voice commands illustration image
-const voiceCommandsImage = "https://images.unsplash.com/photo-1590660034981-35b4d92932c0?q=80&w=500";
+// Updated voice commands illustration image
+const voiceCommandsImage = "/lovable-uploads/3533d798-6ecd-4840-8d7f-03eab519abae.png";
 
 export function CarpentryGame() {
   const [currentStep, setCurrentStep] = useState(0);
