@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
 import { QuizGame } from "@/components/games/QuizGame";
-import CodingGameFixed from "@/components/games/CodingGameFixed"; // Use the fixed version
+import { CodingGame } from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
@@ -29,7 +28,7 @@ const games = [
   { 
     id: "coding", 
     title: "Voice Coding", 
-    component: CodingGameFixed, // Use the fixed version
+    component: CodingGame,
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
     description: "Learn coding through voice commands",
     instructions: "Welcome to Voice Coding! You can create variables by saying 'create variable name equal to value', create functions by saying 'create function name', and print to console by saying 'print' followed by your message. Use the Run Code button to execute your code.",
