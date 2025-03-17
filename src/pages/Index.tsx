@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
 import { QuizGame } from "@/components/games/QuizGame";
@@ -7,13 +9,15 @@ import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { logoutUser } from "@/services/userService";
+import { toast } from "sonner";
 
 const games = [
   { 
@@ -185,15 +189,35 @@ const GameInstructions = ({ gameId }) => {
 
 const Index = () => {
   const [selectedGame, setSelectedGame] = useState(null);
+  const navigate = useNavigate();
 
   const GameComponent = selectedGame 
     ? games.find(g => g.id === selectedGame)?.component 
     : null;
 
+  const handleLogout = () => {
+    logoutUser();
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
   return (
     <VoiceProvider>
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-purple-50 to-blue-50">
         <Header />
+        
+        <div className="container mx-auto px-4">
+          <div className="flex justify-end my-4">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
+        </div>
         
         <main className="flex-1 py-8 px-4">
           <div className="max-w-6xl mx-auto">
