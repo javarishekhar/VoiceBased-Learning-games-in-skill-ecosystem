@@ -9,7 +9,6 @@ import { userService } from "@/services/userService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import OTPVerification from "@/components/OTPVerification";
 import {
   Form,
   FormControl,
@@ -37,7 +36,6 @@ const signupSchema = z.object({
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const Signup = () => {
-  const [showOtpVerification, setShowOtpVerification] = useState(false);
   const navigate = useNavigate();
   
   const form = useForm<SignupFormValues>({
@@ -54,14 +52,8 @@ const Signup = () => {
   });
   
   const onSubmit = (values: SignupFormValues) => {
-    // Start OTP verification process
-    setShowOtpVerification(true);
-  };
-  
-  const handleOtpVerified = () => {
-    // Now that OTP is verified, register the user
     try {
-      const { confirmPassword, ...userData } = form.getValues();
+      const { confirmPassword, ...userData } = values;
       userService.saveUser(userData);
       toast.success("Registration successful! Please login.");
       navigate("/login");
@@ -73,16 +65,6 @@ const Signup = () => {
   const handleLoginClick = () => {
     navigate("/login");
   };
-  
-  if (showOtpVerification) {
-    return (
-      <OTPVerification
-        mobile={form.getValues().mobile}
-        onVerified={handleOtpVerified}
-        onCancel={() => setShowOtpVerification(false)}
-      />
-    );
-  }
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-50 to-blue-50 p-4">
