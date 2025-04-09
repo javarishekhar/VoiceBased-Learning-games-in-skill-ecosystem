@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -823,6 +822,7 @@ if (isLeapYear) {
     }
   };
 
+  // Execute code function with the fix for the type error at line 1112
   const executeCode = () => {
     try {
       // For sum program
