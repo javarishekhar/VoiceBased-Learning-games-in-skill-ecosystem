@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ const editorStyles = {
   color: "#334155",
   height: "300px",
   width: "100%",
-  resize: "none",
+  resize: "none" as const, // Fix the type error by using 'as const'
   outline: "none",
 };
 
@@ -51,7 +52,7 @@ export const CodingGame = () => {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
   const [activeTab, setActiveTab] = useState("editor");
-  const { transcript, listening, toggleListening, resetTranscript } = useVoice();
+  const { transcript, isListening: listening, startListening: toggleListening, clearTranscript: resetTranscript } = useVoice();
   const { toast } = useToast();
 
   // Handle voice commands
