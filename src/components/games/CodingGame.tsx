@@ -26,6 +26,11 @@ const commands = {
   multiplicationProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+multiplication\s+(?:of\s+)?(?:two\s+)?numbers/i,
   divisionProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+division\s+(?:of\s+)?(?:two\s+)?numbers/i,
   leapYearProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+leap\s+year/i,
+  evenOddProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+even\s+or\s+odd/i,
+  primeNumberProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+prime\s+number/i,
+  firstNumber: /(?:first|1st)\s+number\s+(?:is|equals?|=)?\s+(\d+)/i,
+  secondNumber: /(?:second|2nd)\s+number\s+(?:is|equals?|=)?\s+(\d+)/i,
+  setNumber: /(?:number|num)\s+(\d+)\s+(?:is|equals?|=)?\s+(\d+)/i,
 };
 
 // Editor styles
@@ -68,8 +73,8 @@ function multiply(a, b) {
 }
 
 // Get user inputs
-let num1 = 0; // You can set this via voice with "set num1 to <value>"
-let num2 = 0; // You can set this via voice with "set num2 to <value>"
+let num1 = 0; // You can set this via voice with "first number is <value>"
+let num2 = 0; // You can set this via voice with "second number is <value>"
 
 // Calculate the result
 const result = multiply(num1, num2);
@@ -86,8 +91,8 @@ function divide(a, b) {
 }
 
 // Get user inputs
-let num1 = 0; // You can set this via voice with "set num1 to <value>"
-let num2 = 1; // You can set this via voice with "set num2 to <value>"
+let num1 = 0; // You can set this via voice with "first number is <value>"
+let num2 = 1; // You can set this via voice with "second number is <value>"
 
 // Calculate the result
 const result = divide(num1, num2);
@@ -114,6 +119,53 @@ if (result) {
   console.log(\`\${year} is a leap year\`);
 } else {
   console.log(\`\${year} is not a leap year\`);
+}`,
+
+    evenOdd: `// Check if a number is even or odd
+function checkEvenOdd(num) {
+  if (num % 2 === 0) {
+    return "even";
+  } else {
+    return "odd";
+  }
+}
+
+// Get user input
+let number = 0; // You can set this via voice with "set number to <value>"
+
+// Check if it's even or odd
+const result = checkEvenOdd(number);
+
+// Display the result
+console.log(\`\${number} is \${result}\`);`,
+
+    primeNumber: `// Check if a number is prime
+function isPrime(num) {
+  if (num <= 1) return false;
+  if (num <= 3) return true;
+  
+  if (num % 2 === 0 || num % 3 === 0) return false;
+  
+  let i = 5;
+  while (i * i <= num) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+    i += 6;
+  }
+  
+  return true;
+}
+
+// Get user input
+let number = 7; // You can set this via voice with "set number to <value>"
+
+// Check if it's a prime number
+const result = isPrime(number);
+
+// Display the result
+if (result) {
+  console.log(\`\${number} is a prime number\`);
+} else {
+  console.log(\`\${number} is not a prime number\`);
 }`
   },
   
@@ -123,8 +175,8 @@ def multiply(a, b):
     return a * b
 
 # Get user inputs
-num1 = 0  # You can set this via voice with "set num1 to <value>"
-num2 = 0  # You can set this via voice with "set num2 to <value>"
+num1 = 0  # You can set this via voice with "first number is <value>"
+num2 = 0  # You can set this via voice with "second number is <value>"
 
 # Calculate the result
 result = multiply(num1, num2)
@@ -139,8 +191,8 @@ def divide(a, b):
     return a / b
 
 # Get user inputs
-num1 = 0  # You can set this via voice with "set num1 to <value>"
-num2 = 1  # You can set this via voice with "set num2 to <value>"
+num1 = 0  # You can set this via voice with "first number is <value>"
+num2 = 1  # You can set this via voice with "second number is <value>"
 
 # Calculate the result
 result = divide(num1, num2)
@@ -164,7 +216,53 @@ result = is_leap_year(year)
 if result:
     print(f"{year} is a leap year")
 else:
-    print(f"{year} is not a leap year")`
+    print(f"{year} is not a leap year")`,
+    
+    evenOdd: `# Check if a number is even or odd
+def check_even_odd(num):
+    if num % 2 == 0:
+        return "even"
+    else:
+        return "odd"
+
+# Get user input
+number = 0  # You can set this via voice with "set number to <value>"
+
+# Check if it's even or odd
+result = check_even_odd(number)
+
+# Display the result
+print(f"{number} is {result}")`,
+
+    primeNumber: `# Check if a number is prime
+def is_prime(num):
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+        
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+        
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+        
+    return True
+
+# Get user input
+number = 7  # You can set this via voice with "set number to <value>"
+
+# Check if it's a prime number
+result = is_prime(number)
+
+# Display the result
+if result:
+    print(f"{number} is a prime number")
+else:
+    print(f"{number} is not a prime number")`
   },
   
   c: {
@@ -177,8 +275,8 @@ int multiply(int a, int b) {
 
 int main() {
     // Get user inputs
-    int num1 = 0; // You can set this via voice with "set num1 to <value>"
-    int num2 = 0; // You can set this via voice with "set num2 to <value>"
+    int num1 = 0; // You can set this via voice with "first number is <value>"
+    int num2 = 0; // You can set this via voice with "second number is <value>"
     
     // Calculate the result
     int result = multiply(num1, num2);
@@ -202,8 +300,8 @@ float divide(float a, float b) {
 
 int main() {
     // Get user inputs
-    float num1 = 0; // You can set this via voice with "set num1 to <value>"
-    float num2 = 1; // You can set this via voice with "set num2 to <value>"
+    float num1 = 0; // You can set this via voice with "first number is <value>"
+    float num2 = 1; // You can set this via voice with "second number is <value>"
     
     // Calculate the result
     float result = divide(num1, num2);
@@ -239,6 +337,66 @@ int main() {
     }
     
     return 0;
+}`,
+
+    evenOdd: `#include <stdio.h>
+
+// Check if a number is even or odd
+const char* checkEvenOdd(int num) {
+    if (num % 2 == 0) {
+        return "even";
+    } else {
+        return "odd";
+    }
+}
+
+int main() {
+    // Get user input
+    int number = 0; // You can set this via voice with "set number to <value>"
+    
+    // Check if it's even or odd
+    const char* result = checkEvenOdd(number);
+    
+    // Display the result
+    printf("%d is %s\\n", number, result);
+    
+    return 0;
+}`,
+
+    primeNumber: `#include <stdio.h>
+#include <stdbool.h>
+
+// Check if a number is prime
+bool isPrime(int num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+    
+    if (num % 2 == 0 || num % 3 == 0) return false;
+    
+    int i = 5;
+    while (i * i <= num) {
+        if (num % i == 0 || num % (i + 2) == 0) return false;
+        i += 6;
+    }
+    
+    return true;
+}
+
+int main() {
+    // Get user input
+    int number = 7; // You can set this via voice with "set number to <value>"
+    
+    // Check if it's a prime number
+    bool result = isPrime(number);
+    
+    // Display the result
+    if (result) {
+        printf("%d is a prime number\\n", number);
+    } else {
+        printf("%d is not a prime number\\n", number);
+    }
+    
+    return 0;
 }`
   },
   
@@ -251,8 +409,8 @@ public class Multiplication {
     
     public static void main(String[] args) {
         // Get user inputs
-        int num1 = 0; // You can set this via voice with "set num1 to <value>"
-        int num2 = 0; // You can set this via voice with "set num2 to <value>"
+        int num1 = 0; // You can set this via voice with "first number is <value>"
+        int num2 = 0; // You can set this via voice with "second number is <value>"
         
         // Calculate the result
         int result = multiply(num1, num2);
@@ -274,8 +432,8 @@ public class Division {
     
     public static void main(String[] args) {
         // Get user inputs
-        double num1 = 0; // You can set this via voice with "set num1 to <value>"
-        double num2 = 1; // You can set this via voice with "set num2 to <value>"
+        double num1 = 0; // You can set this via voice with "first number is <value>"
+        double num2 = 1; // You can set this via voice with "second number is <value>"
         
         // Calculate the result
         double result = divide(num1, num2);
@@ -308,6 +466,61 @@ public class LeapYear {
             System.out.println(year + " is not a leap year");
         }
     }
+}`,
+
+    evenOdd: `// Check if a number is even or odd
+public class EvenOdd {
+    public static String checkEvenOdd(int num) {
+        if (num % 2 == 0) {
+            return "even";
+        } else {
+            return "odd";
+        }
+    }
+    
+    public static void main(String[] args) {
+        // Get user input
+        int number = 0; // You can set this via voice with "set number to <value>"
+        
+        // Check if it's even or odd
+        String result = checkEvenOdd(number);
+        
+        // Display the result
+        System.out.println(number + " is " + result);
+    }
+}`,
+
+    primeNumber: `// Check if a number is prime
+public class PrimeNumber {
+    public static boolean isPrime(int num) {
+        if (num <= 1) return false;
+        if (num <= 3) return true;
+        
+        if (num % 2 == 0 || num % 3 == 0) return false;
+        
+        int i = 5;
+        while (i * i <= num) {
+            if (num % i == 0 || num % (i + 2) == 0) return false;
+            i += 6;
+        }
+        
+        return true;
+    }
+    
+    public static void main(String[] args) {
+        // Get user input
+        int number = 7; // You can set this via voice with "set number to <value>"
+        
+        // Check if it's a prime number
+        boolean result = isPrime(number);
+        
+        // Display the result
+        if (result) {
+            System.out.println(number + " is a prime number");
+        } else {
+            System.out.println(number + " is not a prime number");
+        }
+    }
 }`
   }
 };
@@ -318,7 +531,7 @@ export const CodingGame = () => {
   const [activeTab, setActiveTab] = useState("editor");
   const [language, setLanguage] = useState("javascript");
   const [currentProgram, setCurrentProgram] = useState("");
-  const { transcript, isListening: listening, startListening: toggleListening, clearTranscript: resetTranscript } = useVoice();
+  const { transcript, isListening, startListening: toggleListening, clearTranscript: resetTranscript } = useVoice();
   const { toast } = useToast();
 
   // Effect to update code when language changes
@@ -387,6 +600,128 @@ export const CodingGame = () => {
         title: "Code Cleared",
         description: "Cleared all code and output",
       });
+      commandProcessed = true;
+    }
+
+    // First number command
+    const firstNumMatch = transcript.match(commands.firstNumber);
+    if (firstNumMatch && !commandProcessed) {
+      const [_, value] = firstNumMatch;
+      
+      try {
+        const lines = code.split('\n');
+        let updatedCode = '';
+        let updated = false;
+        
+        for (const line of lines) {
+          // Match num1 declarations in different languages
+          const jsMatch = line.match(/\b(let|var|const)\s+num1\s*=\s*([^;]+);/);
+          const pyMatch = line.match(/\bnum1\s*=\s*(.+)/);
+          const cMatch = line.match(/\b(int|float|double)\s+num1\s*=\s*([^;]+);/);
+          
+          if (jsMatch || pyMatch || cMatch) {
+            // For JavaScript
+            if (jsMatch) {
+              updatedCode += line.replace(/=\s*([^;]+);/, `= ${value};`) + '\n';
+            } 
+            // For Python
+            else if (pyMatch) {
+              updatedCode += line.replace(/=\s*(.+)$/, `= ${value}`) + '\n';
+            } 
+            // For C/Java
+            else if (cMatch) {
+              updatedCode += line.replace(/=\s*([^;]+);/, `= ${value};`) + '\n';
+            }
+            updated = true;
+          } else {
+            updatedCode += line + '\n';
+          }
+        }
+        
+        if (updated) {
+          setCode(updatedCode);
+          toast({
+            title: "First Number Updated",
+            description: `Set first number to ${value}`,
+          });
+        } else {
+          toast({
+            title: "Variable Not Found",
+            description: `Couldn't find first number variable to update`,
+            variant: "destructive",
+          });
+        }
+        
+      } catch (error) {
+        console.error("Error updating first number:", error);
+        toast({
+          title: "Error",
+          description: `Failed to update first number: ${error.message}`,
+          variant: "destructive",
+        });
+      }
+      
+      commandProcessed = true;
+    }
+
+    // Second number command
+    const secondNumMatch = transcript.match(commands.secondNumber);
+    if (secondNumMatch && !commandProcessed) {
+      const [_, value] = secondNumMatch;
+      
+      try {
+        const lines = code.split('\n');
+        let updatedCode = '';
+        let updated = false;
+        
+        for (const line of lines) {
+          // Match num2 declarations in different languages
+          const jsMatch = line.match(/\b(let|var|const)\s+num2\s*=\s*([^;]+);/);
+          const pyMatch = line.match(/\bnum2\s*=\s*(.+)/);
+          const cMatch = line.match(/\b(int|float|double)\s+num2\s*=\s*([^;]+);/);
+          
+          if (jsMatch || pyMatch || cMatch) {
+            // For JavaScript
+            if (jsMatch) {
+              updatedCode += line.replace(/=\s*([^;]+);/, `= ${value};`) + '\n';
+            } 
+            // For Python
+            else if (pyMatch) {
+              updatedCode += line.replace(/=\s*(.+)$/, `= ${value}`) + '\n';
+            } 
+            // For C/Java
+            else if (cMatch) {
+              updatedCode += line.replace(/=\s*([^;]+);/, `= ${value};`) + '\n';
+            }
+            updated = true;
+          } else {
+            updatedCode += line + '\n';
+          }
+        }
+        
+        if (updated) {
+          setCode(updatedCode);
+          toast({
+            title: "Second Number Updated",
+            description: `Set second number to ${value}`,
+          });
+        } else {
+          toast({
+            title: "Variable Not Found",
+            description: `Couldn't find second number variable to update`,
+            variant: "destructive",
+          });
+        }
+        
+      } catch (error) {
+        console.error("Error updating second number:", error);
+        toast({
+          title: "Error",
+          description: `Failed to update second number: ${error.message}`,
+          variant: "destructive",
+        });
+      }
+      
       commandProcessed = true;
     }
 
@@ -483,6 +818,26 @@ export const CodingGame = () => {
       commandProcessed = true;
     }
 
+    if (transcript.match(commands.evenOddProgram) && !commandProcessed) {
+      setCurrentProgram('evenOdd');
+      setCode(programTemplates[language].evenOdd);
+      toast({
+        title: "Program Generated",
+        description: "Created even or odd program template",
+      });
+      commandProcessed = true;
+    }
+    
+    if (transcript.match(commands.primeNumberProgram) && !commandProcessed) {
+      setCurrentProgram('primeNumber');
+      setCode(programTemplates[language].primeNumber);
+      toast({
+        title: "Program Generated",
+        description: "Created prime number checker program template",
+      });
+      commandProcessed = true;
+    }
+
     // Help command
     if (transcript.match(commands.help) && !commandProcessed) {
       toast({
@@ -494,9 +849,13 @@ export const CodingGame = () => {
           - "Run code"
           - "Clear code"
           - "Set [variable] to [value]"
+          - "First number is [value]"
+          - "Second number is [value]"
           - "Write a program on multiplication of two numbers"
           - "Write a program on division of two numbers"
           - "Write a program on leap year"
+          - "Write a program on even or odd"
+          - "Write a program on prime number"
         `,
         duration: 5000,
       });
@@ -574,6 +933,27 @@ export const CodingGame = () => {
             outputText += isLeapYear 
               ? `${year} is a leap year\n`
               : `${year} is not a leap year\n`;
+          } else if (currentProgram === 'evenOdd') {
+            const numMatch = code.match(/(?:int)\s+number\s*=\s*(\d+)/);
+            const number = numMatch ? parseInt(numMatch[1]) : 0;
+            const isEven = number % 2 === 0;
+            outputText += `${number} is ${isEven ? 'even' : 'odd'}\n`;
+          } else if (currentProgram === 'primeNumber') {
+            const numMatch = code.match(/(?:int)\s+number\s*=\s*(\d+)/);
+            const number = numMatch ? parseInt(numMatch[1]) : 7;
+            
+            // Simple prime check
+            let isPrime = number > 1;
+            for(let i = 2; i * i <= number; i++) {
+              if(number % i === 0) {
+                isPrime = false;
+                break;
+              }
+            }
+            
+            outputText += isPrime 
+              ? `${number} is a prime number\n`
+              : `${number} is not a prime number\n`;
           }
         }
       }
@@ -641,9 +1021,9 @@ export const CodingGame = () => {
           
           <Button
             onClick={toggleListening}
-            variant={listening ? "destructive" : "default"}
+            variant={isListening ? "destructive" : "default"}
           >
-            {listening ? "Stop Listening" : "Start Voice Commands"}
+            {isListening ? "Stop Listening" : "Start Voice Commands"}
           </Button>
         </div>
       </div>
@@ -656,7 +1036,10 @@ export const CodingGame = () => {
           <li>"Write a program on multiplication of two numbers"</li>
           <li>"Write a program on division of two numbers"</li>
           <li>"Write a program on leap year"</li>
-          <li>"Set num1 to 10" (to update variables)</li>
+          <li>"Write a program on even or odd"</li>
+          <li>"Write a program on prime number"</li>
+          <li>"First number is 10" (to set first number)</li>
+          <li>"Second number is 20" (to set second number)</li>
           <li>"Run code"</li>
         </ul>
       </div>
@@ -691,7 +1074,7 @@ export const CodingGame = () => {
         <Button onClick={executeCode}>Run Code</Button>
       </div>
 
-      {listening && (
+      {isListening && (
         <div className="mt-4 p-3 bg-blue-50 rounded-md">
           <p className="text-sm text-blue-800">
             <strong>Listening:</strong> {transcript}
