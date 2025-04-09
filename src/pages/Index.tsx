@@ -1,19 +1,23 @@
+
 import { useState } from "react";
 import { VoiceProvider } from "@/contexts/VoiceContext";
 import { VoiceIndicator } from "@/components/VoiceIndicator";
-import { QuizGame } from "@/components/games/QuizGame";
-import { CodingGame } from "@/components/games/CodingGame";
+import QuizGame from "@/components/games/QuizGame";
+import CodingGame from "@/components/games/CodingGame";
 import { CarpentryGame } from "@/components/games/CarpentryGame";
 import { FirstAidGame } from "@/components/games/FirstAidGame";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2 } from "lucide-react";
+import { BookOpen, Code, Hammer, Heart, Home, Info, Mail, HelpCircle, Volume2, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "@/services/userService";
+import { useToast } from "@/hooks/use-toast";
 
 const games = [
   { 
@@ -122,7 +126,7 @@ const Header = () => {
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Welcome Shekhar, let's play the game..!!</p>
+                    <p>Welcome, let's play the game!</p>
                   </TooltipContent>
                 </Tooltip>
               ))}
@@ -185,15 +189,37 @@ const GameInstructions = ({ gameId }) => {
 
 const Index = () => {
   const [selectedGame, setSelectedGame] = useState(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const GameComponent = selectedGame 
     ? games.find(g => g.id === selectedGame)?.component 
     : null;
+    
+  const handleLogout = () => {
+    logoutUser();
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    navigate("/login");
+  };
 
   return (
     <VoiceProvider>
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-purple-50 to-blue-50">
         <Header />
+        
+        <div className="flex justify-end p-2">
+          <Button 
+            onClick={handleLogout}
+            variant="outline"
+            className="flex items-center space-x-2 hover:bg-red-50"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </Button>
+        </div>
         
         <main className="flex-1 py-8 px-4">
           <div className="max-w-6xl mx-auto">
