@@ -1,10 +1,15 @@
 
 import { motion } from "framer-motion";
-import { FirstAidStep } from "./firstAidData";
+
+interface CarpentryStep {
+  name: string;
+  animation: string;
+  alt: string;
+}
 
 interface StepAnimationProps {
   showAnimation: boolean;
-  currentStep: FirstAidStep;
+  currentStep: CarpentryStep;
 }
 
 export function StepAnimation({ showAnimation, currentStep }: StepAnimationProps) {
