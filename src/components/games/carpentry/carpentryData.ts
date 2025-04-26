@@ -12,45 +12,45 @@ export const carpentrySteps: CarpentryStep[] = [
     name: "Measure the wood",
     details: "Use a measuring tape to get accurate dimensions",
     tools: ["measuring tape", "pencil"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzZiNjBhYjEwNDExMDg2YTNiMDY0NWNiMDI5M2Q1ZTY3YjZjMjZmNyZjdD1n/3o7TKSha51AtNlLOLm/giphy.gif",
-    alt: "Measuring wood with tape measure animation"
+    animation: "/lovable-uploads/3533d798-6ecd-4840-8d7f-03eab519abae.png",
+    alt: "Person measuring wood with a tape measure"
   },
   {
     name: "Mark cutting lines",
     details: "Use a straight edge and pencil to mark your cuts",
     tools: ["pencil", "straight edge", "square"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjQ5YzE4ZmM3NjFiNGFhOGZkYjM4ODc0YzEzZjY5ZmYzYWI1NjVjZiZjdD1n/3o7TKRnEgJj3NcHivu/giphy.gif",
-    alt: "Marking wood cutting lines animation"
+    animation: "/lovable-uploads/70b909c8-7da9-4f15-9154-b47ce62e8412.png",
+    alt: "Marking cutting lines on wood"
   },
   {
     name: "Cut the wood",
     details: "Carefully cut along the marked lines",
     tools: ["saw", "clamps"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTJkYjFkZGYwNGQ0ZWNiOWM4OWY3ZjY5ZWYyYjY4ZjIyZjZhYjhmZCZjdD1n/3o7TKtsBMu4LFhts9O/giphy.gif",
-    alt: "Cutting wood with saw animation"
+    animation: "/lovable-uploads/a8ab20ca-9a89-46d9-bf40-7e5cd72588fa.png",
+    alt: "Cutting wood with a saw"
   },
   {
     name: "Sand the edges",
     details: "Smooth all cut edges with sandpaper",
     tools: ["sandpaper", "sanding block"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzM0ZjE0ZmIyYzQ0ZTliYjJkYzE4YjUxMjY3ZGY5YzY0ZjYyNDFjZiZjdD1n/3o7TKRwHq7NLy/giphy.gif",
-    alt: "Sanding wood edges animation"
+    animation: "/lovable-uploads/3533d798-6ecd-4840-8d7f-03eab519abae.png",
+    alt: "Sanding wood edges"
   },
   {
     name: "Assemble pieces",
     details: "Join the pieces according to the plan",
     tools: ["screwdriver", "screws", "wood glue"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjY0YzI4ZmE3NjFiNGFhOGZkYjM4ODc0YzEzZjY5ZmYzYWI1NjVjZiZjdD1n/3o7TKGMZHi73yzCumQ/giphy.gif",
-    alt: "Assembling wooden pieces animation"
+    animation: "/lovable-uploads/70b909c8-7da9-4f15-9154-b47ce62e8412.png",
+    alt: "Assembling wooden pieces"
   },
   {
     name: "Apply finish",
     details: "Apply your chosen finish for protection",
     tools: ["finish", "brush", "cloth"],
-    animation: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzEyZjE0ZmIyYzQ0ZTliYjJkYzE4YjUxMjY3ZGY5YzY0ZjYyNDFjZiZjdD1n/3o7TKRwHq7NLy/giphy.gif",
-    alt: "Applying wood finish animation"
+    animation: "/lovable-uploads/a8ab20ca-9a89-46d9-bf40-7e5cd72588fa.png",
+    alt: "Applying finish to wood"
   }
 ];
 
 // Voice commands illustration image
-export const voiceCommandsImage = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTJkYjFkZGYwNGQ0ZWNiOWM4OWY3ZjY5ZWYyYjY4ZjIyZjZhYjhmZCZjdD1n/3o7TKtsBMu4LFhts9O/giphy.gif";
+export const voiceCommandsImage = "/lovable-uploads/3533d798-6ecd-4840-8d7f-03eab519abae.png";
