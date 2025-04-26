@@ -10,4 +10,5 @@ export interface GameInfo {
   description: string;
   instructions: string;
   icon: LucideIcon;
+  requiresVoice?: boolean;
 }

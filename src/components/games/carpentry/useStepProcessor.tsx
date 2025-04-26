@@ -14,6 +14,8 @@ interface StepProcessorReturn {
   setGameCompleted: React.Dispatch<React.SetStateAction<boolean>>;
   audioRef: React.RefObject<HTMLAudioElement>;
   processVoiceCommand: (command: string, stopListening: () => void) => void;
+  voiceCommandError: string | null;
+  setVoiceCommandError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export function useStepProcessor(): StepProcessorReturn {
@@ -21,10 +23,20 @@ export function useStepProcessor(): StepProcessorReturn {
   const [completed, setCompleted] = useState<string[]>([]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [voiceCommandError, setVoiceCommandError] = useState<string | null>(null);
   const { toast } = useToast();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const processVoiceCommand = (command: string, stopListening: () => void) => {
+    // Reset any previous errors
+    setVoiceCommandError(null);
+    
+    if (!command || command.trim() === "") {
+      setVoiceCommandError("No command detected. Please try speaking more clearly.");
+      return;
+    }
+    
+    command = command.toLowerCase().trim();
     const currentStepLower = carpentrySteps[currentStep].name.toLowerCase();
     
     if (command.includes(currentStepLower) || 
@@ -73,6 +85,8 @@ export function useStepProcessor(): StepProcessorReturn {
         description: carpentrySteps[currentStep].details,
         variant: "default",
       });
+    } else {
+      setVoiceCommandError(`Command not recognized: "${command}". Try saying "next step" or the step name.`);
     }
   };
 
@@ -86,6 +100,8 @@ export function useStepProcessor(): StepProcessorReturn {
     gameCompleted,
     setGameCompleted,
     audioRef,
-    processVoiceCommand
+    processVoiceCommand,
+    voiceCommandError,
+    setVoiceCommandError
   };
 }

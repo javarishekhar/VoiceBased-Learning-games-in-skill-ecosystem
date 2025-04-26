@@ -9,6 +9,7 @@ interface VoiceContextType {
   stopListening: () => void;
   confidence: number;
   clearTranscript: () => void;
+  error: string | null;
 }
 
 const VoiceContext = createContext<VoiceContextType | undefined>(undefined);
@@ -24,6 +25,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [confidence, setConfidence] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const recognitionRef = useRef<any>(null);
 
@@ -39,6 +41,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         recognition.onstart = () => {
           console.log("Voice recognition started");
           setIsListening(true);
+          setError(null);
         };
 
         recognition.onresult = (event: any) => {
@@ -48,15 +51,44 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
           console.log("Transcript:", transcript, "Confidence:", confidence);
           setTranscript(transcript);
           setConfidence(confidence);
+          setError(null);
         };
 
         recognition.onerror = (event: any) => {
           console.error("Voice recognition error:", event.error);
+          let errorMessage = "Unknown voice recognition error";
+          
+          switch(event.error) {
+            case 'no-speech':
+              errorMessage = "No speech was detected. Please try again.";
+              break;
+            case 'aborted':
+              errorMessage = "Voice input was aborted.";
+              break;
+            case 'audio-capture':
+              errorMessage = "Microphone not detected or permission denied.";
+              break;
+            case 'network':
+              errorMessage = "Network error occurred. Check your connection.";
+              break;
+            case 'not-allowed':
+              errorMessage = "Microphone permission was denied.";
+              break;
+            case 'service-not-allowed':
+              errorMessage = "Speech recognition service not allowed.";
+              break;
+            default:
+              errorMessage = `Error: ${event.error}. Please try again.`;
+          }
+          
+          setError(errorMessage);
+          
           toast({
             title: "Voice Recognition Error",
-            description: `Error: ${event.error}. Please try again.`,
+            description: errorMessage,
             variant: "destructive",
           });
+          
           setIsListening(false);
         };
 
@@ -67,6 +99,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
         recognitionRef.current = recognition;
       } else {
+        setError("Your browser doesn't support speech recognition");
         toast({
           title: "Browser Not Supported",
           description: "Voice recognition is not supported in your browser.",
@@ -95,8 +128,9 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
           recognitionRef.current.abort();
         }
         
-        // Clear previous transcript
+        // Clear previous transcript and error
         setTranscript("");
+        setError(null);
         
         // Start new session
         recognitionRef.current.start();
@@ -105,12 +139,15 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         console.error("Error starting recognition:", error);
         // If there's an error, ensure state is correct
         setIsListening(false);
+        setError("Failed to start voice recognition");
         toast({
           title: "Recognition Error",
           description: "Failed to start voice recognition. Please try again.",
           variant: "destructive",
         });
       }
+    } else {
+      setError("Speech recognition not available");
     }
   }, [isListening, toast]);
 
@@ -121,6 +158,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         console.log("Stopping voice recognition");
       } catch (error) {
         console.error("Error stopping recognition:", error);
+        setError("Error stopping voice recognition");
       }
       // Immediately update UI state, don't wait for onend
       setIsListening(false);
@@ -129,6 +167,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
 
   const clearTranscript = useCallback(() => {
     setTranscript("");
+    setError(null);
   }, []);
 
   return (
@@ -140,6 +179,7 @@ export function VoiceProvider({ children }: { children: React.ReactNode }) {
         stopListening,
         confidence,
         clearTranscript,
+        error
       }}
     >
       {children}
