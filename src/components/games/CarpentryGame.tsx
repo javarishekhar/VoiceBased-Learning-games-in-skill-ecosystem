@@ -14,7 +14,7 @@ import { VoiceControl } from "./carpentry/VoiceControl";
 import { useStepProcessor } from "./carpentry/useStepProcessor";
 
 export function CarpentryGame() {
-  const { transcript, isListening, startListening, stopListening } = useVoice();
+  const { transcript, isListening, startListening, stopListening, error } = useVoice();
   const [showVoiceHelp, setShowVoiceHelp] = useState(false);
   
   const {
@@ -26,7 +26,9 @@ export function CarpentryGame() {
     audioRef,
     processVoiceCommand,
     setCurrentStep,
-    setCompleted
+    setCompleted,
+    voiceCommandError,
+    setVoiceCommandError
   } = useStepProcessor();
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function CarpentryGame() {
         startListening={startListening}
         stopListening={stopListening}
         transcript={transcript}
+        error={error || voiceCommandError}
       />
       
       {/* Sound effect for completion */}

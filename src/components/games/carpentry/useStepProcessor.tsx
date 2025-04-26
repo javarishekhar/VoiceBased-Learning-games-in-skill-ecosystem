@@ -47,7 +47,9 @@ export function useStepProcessor(): StepProcessorReturn {
       
       // Play sound effect for step completion
       if (audioRef.current) {
-        audioRef.current.play();
+        audioRef.current.play().catch(err => {
+          console.error("Error playing audio:", err);
+        });
       }
       
       // Show animation for 3 seconds then proceed

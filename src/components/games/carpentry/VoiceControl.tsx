@@ -9,7 +9,7 @@ interface VoiceControlProps {
   startListening: () => void;
   stopListening: () => void;
   transcript: string;
-  error?: string;
+  error?: string | null;
 }
 
 export function VoiceControl({ 
@@ -20,7 +20,7 @@ export function VoiceControl({
   error
 }: VoiceControlProps) {
   return (
-    <>
+    <div className="mt-6 flex flex-col items-center">
       <Button
         onClick={() => (isListening ? stopListening() : startListening())}
         className={isListening ? "bg-secondary" : "bg-primary"}
@@ -58,6 +58,6 @@ export function VoiceControl({
           <span>{error}</span>
         </motion.div>
       )}
-    </>
+    </div>
   );
 }

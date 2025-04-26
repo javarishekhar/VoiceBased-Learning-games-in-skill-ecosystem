@@ -1,7 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,21 +9,26 @@ import { VoiceCommandsHelp } from "./first-aid/VoiceCommandsHelp";
 import { StepAnimation } from "./first-aid/StepAnimation";
 import { CongratsScreen } from "./first-aid/CongratsScreen";
 import { CompletedSteps } from "./first-aid/CompletedSteps";
+import { VoiceControl } from "./carpentry/VoiceControl";
 
 export function FirstAidGame() {
   const [currentStep, setCurrentStep] = useState(0);
   const [completed, setCompleted] = useState<string[]>([]);
-  const { transcript, isListening, startListening, stopListening } = useVoice();
+  const { transcript, isListening, startListening, stopListening, error } = useVoice();
   const { toast } = useToast();
   const [showAnimation, setShowAnimation] = useState(false);
   const [showVoiceHelp, setShowVoiceHelp] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [voiceCommandError, setVoiceCommandError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (transcript && isListening) {
       const command = transcript.toLowerCase().trim();
       console.log("Processing first aid command:", command);
+      
+      // Reset any previous command errors
+      setVoiceCommandError(null);
       
       const currentStepLower = firstAidSteps[currentStep].name.toLowerCase();
       if (command.includes(currentStepLower) || 
@@ -80,6 +84,8 @@ export function FirstAidGame() {
         setTimeout(() => {
           setShowVoiceHelp(false);
         }, 6000);
+      } else {
+        setVoiceCommandError(`Command not recognized: "${command}". Try saying "next step" or the step name.`);
       }
     }
   }, [transcript, currentStep, isListening, stopListening, toast]);
@@ -150,32 +156,13 @@ export function FirstAidGame() {
 
       <CompletedSteps completed={completed} />
 
-      <Button
-        onClick={() => (isListening ? stopListening() : startListening())}
-        className={isListening ? "bg-secondary" : "bg-primary"}
-      >
-        {isListening ? "Stop Listening" : "Start Speaking"}
-      </Button>
-
-      {isListening && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center mt-4 text-sm text-gray-600"
-        >
-          Listening... Say a command!
-        </motion.p>
-      )}
-      
-      {transcript && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mt-2 text-sm text-gray-600"
-        >
-          Heard: {transcript}
-        </motion.p>
-      )}
+      <VoiceControl
+        isListening={isListening}
+        startListening={startListening}
+        stopListening={stopListening}
+        transcript={transcript}
+        error={error || voiceCommandError}
+      />
 
       {/* Sound effect for completion */}
       <audio ref={audioRef} src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" />
