@@ -396,7 +396,7 @@ int main() {
     
     return 0;
 }`,
-    
+
     addition: `#include <stdio.h>
 
 // Addition of two numbers

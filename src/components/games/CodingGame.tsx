@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,6 @@ import {
 import { CodeEditor } from "./coding/CodeEditor";
 import { OutputWindow } from "./coding/OutputWindow";
 import { useVoiceCommands } from "./coding/useVoiceCommands";
-import { programTemplates } from "./coding/programTemplates";
 
 export const CodingGame = () => {
   const [code, setCode] = useState("");
@@ -22,7 +21,12 @@ export const CodingGame = () => {
   const [language, setLanguage] = useState("javascript");
   const [currentProgram, setCurrentProgram] = useState("");
 
-  const { isListening, startListening, clearTranscript } = useVoiceCommands(code, setCode);
+  const { isListening, startListening, clearTranscript } = useVoiceCommands(
+    code, 
+    setCode, 
+    setOutput,
+    language
+  );
 
   // Effect to update code when language changes
   useEffect(() => {
@@ -33,7 +37,6 @@ export const CodingGame = () => {
 
   const executeCode = () => {
     try {
-      // Create a new Function from the code and execute it
       const result = new Function(code)();
       setOutput(String(result));
     } catch (error) {

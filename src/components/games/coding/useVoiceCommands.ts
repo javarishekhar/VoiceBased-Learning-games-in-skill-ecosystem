@@ -4,7 +4,12 @@ import { useToast } from "@/hooks/use-toast";
 import { commands } from "./commands";
 import { programTemplates } from "./programTemplates";
 
-export const useVoiceCommands = (code: string, setCode: (code: string) => void, setOutput: (output: string) => void) => {
+export const useVoiceCommands = (
+  code: string,
+  setCode: (code: string) => void,
+  setOutput: (output: string) => void,
+  language: string
+) => {
   const { transcript, isListening, startListening: toggleListening, clearTranscript: resetTranscript } = useVoice();
   const { toast } = useToast();
 
@@ -323,107 +328,28 @@ export const useVoiceCommands = (code: string, setCode: (code: string) => void, 
       commandProcessed = true;
     }
 
-    // Multiplication program command
-    if (transcript.match(commands.multiplicationProgram) && !commandProcessed) {
-      setCode(programTemplates[language].multiplication);
-      toast({
-        title: "Program Created",
-        description: "Created multiplication program",
-      });
-      commandProcessed = true;
-    }
-
-    // Division program command
-    if (transcript.match(commands.divisionProgram) && !commandProcessed) {
-      setCode(programTemplates[language].division);
-      toast({
-        title: "Program Created",
-        description: "Created division program",
-      });
-      commandProcessed = true;
-    }
-
-    // Leap year program command
-    if (transcript.match(commands.leapYearProgram) && !commandProcessed) {
-      setCode(programTemplates[language].leapYear);
-      toast({
-        title: "Program Created",
-        description: "Created leap year program",
-      });
-      commandProcessed = true;
-    }
-
-    // Even odd program command
-    if (transcript.match(commands.evenOddProgram) && !commandProcessed) {
-      setCode(programTemplates[language].evenOdd);
-      toast({
-        title: "Program Created",
-        description: "Created even odd program",
-      });
-      commandProcessed = true;
-    }
-
-    // Prime number program command
-    if (transcript.match(commands.primeNumberProgram) && !commandProcessed) {
-      setCode(programTemplates[language].primeNumber);
-      toast({
-        title: "Program Created",
-        description: "Created prime number program",
-      });
-      commandProcessed = true;
-    }
-    
-    // Addition program command
-    if (transcript.match(commands.additionProgram) && !commandProcessed) {
-      setCode(programTemplates[language].addition);
-      toast({
-        title: "Program Created",
-        description: "Created addition program",
-      });
-      commandProcessed = true;
-    }
-
-    // LCM program command
-    if (transcript.match(commands.lcmProgram) && !commandProcessed) {
-      setCode(programTemplates[language].lcm);
-      toast({
-        title: "Program Created",
-        description: "Created LCM program",
-      });
-      commandProcessed = true;
-    }
-
-    // Help command
-    if (transcript.match(commands.help) && !commandProcessed) {
-      toast({
-        title: "Available Commands",
-        description: `
-          - Create variable: create a variable <name> equal to <value>
-          - Create function: create a function <name>
-          - Print: print <value>
-          - Run code: run the code
-          - Clear code: clear the code
-          - Set input: set <variable> to <value>
-          - First number is: first number is <value>
-          - Second number is: second number is <value>
-          - Set number: set number to <value>
-          - Multiplication program: write a program on multiplication of two numbers
-          - Division program: write a program on division of two numbers
-          - Leap year program: write a program on leap year
-          - Even odd program: write a program on even or odd
-          - Prime number program: write a program on prime number
-          - Addition program: write a program on addition of two numbers
-          - LCM program: write a program on lcm of two numbers
-        `,
-        duration: 10000,
-      });
-      commandProcessed = true;
-    }
+    // Program template commands
+    Object.entries(commands).forEach(([key, regex]) => {
+      if (key.endsWith('Program')) {
+        const match = transcript.match(regex);
+        if (match && !commandProcessed) {
+          const programKey = key.replace('Program', '');
+          if (programTemplates[language] && programTemplates[language][programKey]) {
+            setCode(programTemplates[language][programKey]);
+            toast({
+              title: "Program Created",
+              description: `Created ${programKey} program`,
+            });
+            commandProcessed = true;
+          }
+        }
+      }
+    });
 
     if (commandProcessed) {
       resetTranscript();
     }
-  }, [transcript, code, setCode, toast, language, resetTranscript, executeCode, setOutput]);
+  }, [transcript, code, setCode, toast, language, resetTranscript, setOutput]);
 
   const startListening = () => {
     resetTranscript();
