@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,6 +12,7 @@ import {
 import { CodeEditor } from "./coding/CodeEditor";
 import { OutputWindow } from "./coding/OutputWindow";
 import { useVoiceCommands } from "./coding/useVoiceCommands";
+import { programTemplates } from "./coding/programTemplates";
 
 export const CodingGame = () => {
   const [code, setCode] = useState("");
