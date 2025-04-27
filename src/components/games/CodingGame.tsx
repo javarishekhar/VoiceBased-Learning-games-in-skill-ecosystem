@@ -1,4 +1,4 @@
-
+<lov-code>
 import { useState, useEffect } from "react";
 import { useVoice } from "@/contexts/VoiceContext";
 import { Button } from "@/components/ui/button";
@@ -23,14 +23,16 @@ const commands = {
   clearCode: /clear\s+(?:the\s+)?code/i,
   help: /(?:show|tell\s+me)\s+(?:the\s+)?commands/i,
   setInput: /(?:set|input)\s+(\w+)\s+(?:to|as|equals?)\s+(.+)/i,
-  multiplicationProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+multiplication\s+(?:of\s+)?(?:two\s+)?numbers/i,
+  multiplicationProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+multiplication\s+(?:of\s+)?(?:two|2)\s+numbers/i,
   divisionProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+division\s+(?:of\s+)?(?:two\s+)?numbers/i,
   leapYearProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+leap\s+year/i,
   evenOddProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+even\s+or\s+odd/i,
   primeNumberProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+prime\s+number/i,
   firstNumber: /(?:first|1st)\s+number\s+(?:is|equals?|=)?\s+(\d+)/i,
   secondNumber: /(?:second|2nd)\s+number\s+(?:is|equals?|=)?\s+(\d+)/i,
-  setNumber: /(?:number|num)\s+(\d+)\s+(?:is|equals?|=)?\s+(\d+)/i,
+  setNumber: /(?:number|num|year)\s+(?:is|equals?|=)?\s+(\d+)/i,
+  additionProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+addition\s+(?:of\s+)?(?:two|2)\s+numbers/i,
+  lcmProgram: /write\s+(?:a\s+)?program\s+(?:on|for)?\s+lcm\s+(?:of\s+)?(?:two|2)\s+numbers/i,
 };
 
 // Editor styles
@@ -166,7 +168,41 @@ if (result) {
   console.log(\`\${number} is a prime number\`);
 } else {
   console.log(\`\${number} is not a prime number\`);
-}`
+}`,
+    
+    addition: `// Addition of two numbers
+function add(a, b) {
+  return a + b;
+}
+
+// Get user inputs
+let num1 = 0; // You can set this via voice with "first number is <value>"
+let num2 = 0; // You can set this via voice with "second number is <value>"
+
+// Calculate the result
+const result = add(num1, num2);
+
+// Display the result
+console.log(\`\${num1} + \${num2} = \${result}\`);`,
+
+    lcm: `// LCM of two numbers
+function gcd(a, b) {
+  return b === 0 ? a : gcd(b, a % b);
+}
+
+function lcm(a, b) {
+  return Math.abs(a * b) / gcd(a, b);
+}
+
+// Get user inputs
+let num1 = 0; // You can set this via voice with "first number is <value>"
+let num2 = 0; // You can set this via voice with "second number is <value>"
+
+// Calculate the result
+const result = lcm(num1, num2);
+
+// Display the result
+console.log(\`LCM of \${num1} and \${num2} is \${result}\`);`,
   },
   
   python: {
@@ -262,7 +298,38 @@ result = is_prime(number)
 if result:
     print(f"{number} is a prime number")
 else:
-    print(f"{number} is not a prime number")`
+    print(f"{number} is not a prime number")`,
+    
+    addition: `# Addition of two numbers
+def add(a, b):
+    return a + b
+
+# Get user inputs
+num1 = 0  # You can set this via voice with "first number is <value>"
+num2 = 0  # You can set this via voice with "second number is <value>"
+
+# Calculate the result
+result = add(num1, num2)
+
+# Display the result
+print(f"{num1} + {num2} = {result}")`,
+
+    lcm: `# LCM of two numbers
+def gcd(a, b):
+    return a if b == 0 else gcd(b, a % b)
+
+def lcm(a, b):
+    return abs(a * b) // gcd(a, b)
+
+# Get user inputs
+num1 = 0  # You can set this via voice with "first number is <value>"
+num2 = 0  # You can set this via voice with "second number is <value>"
+
+# Calculate the result
+result = lcm(num1, num2)
+
+# Display the result
+print(f"LCM of {num1} and {num2} is {result}")`,
   },
   
   c: {
@@ -397,7 +464,55 @@ int main() {
     }
     
     return 0;
-}`
+}`,
+    
+    addition: `#include <stdio.h>
+
+// Addition of two numbers
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    // Get user inputs
+    int num1 = 0; // You can set this via voice with "first number is <value>"
+    int num2 = 0; // You can set this via voice with "second number is <value>"
+    
+    // Calculate the result
+    int result = add(num1, num2);
+    
+    // Display the result
+    printf("%d + %d = %d\\n", num1, num2, result);
+    
+    return 0;
+}`,
+
+    lcm: `#include <stdio.h>
+#include <stdlib.h>
+
+// GCD function
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+// LCM function
+int lcm(int a, int b) {
+    return abs(a * b) / gcd(a, b);
+}
+
+int main() {
+    // Get user inputs
+    int num1 = 0; // You can set this via voice with "first number is <value>"
+    int num2 = 0; // You can set this via voice with "second number is <value>"
+    
+    // Calculate the result
+    int result = lcm(num1, num2);
+    
+    // Display the result
+    printf("LCM of %d and %d is %d\\n", num1, num2, result);
+    
+    return 0;
+}`,
   },
   
   java: {
@@ -520,6 +635,48 @@ public class PrimeNumber {
         } else {
             System.out.println(number + " is not a prime number");
         }
+    }
+}`,
+    
+    addition: `// Addition of two numbers
+public class Addition {
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static void main(String[] args) {
+        // Get user inputs
+        int num1 = 0; // You can set this via voice with "first number is <value>"
+        int num2 = 0; // You can set this via voice with "second number is <value>"
+        
+        // Calculate the result
+        int result = add(num1, num2);
+        
+        // Display the result
+        System.out.println(num1 + " + " + num2 + " = " + result);
+    }
+}`,
+
+    lcm: `// LCM of two numbers
+public class LCM {
+    public static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+    
+    public static int lcm(int a, int b) {
+        return Math.abs(a * b) / gcd(a, b);
+    }
+    
+    public static void main(String[] args) {
+        // Get user inputs
+        int num1 = 0; // You can set this via voice with "first number is <value>"
+        int num2 = 0; // You can set this via voice with "second number is <value>"
+        
+        // Calculate the result
+        int result = lcm(num1, num2);
+        
+        // Display the result
+        System.out.println("LCM of " + num1 + " and " + num2 + " is " + result);
     }
 }`
   }
@@ -784,303 +941,4 @@ export const CodingGame = () => {
         });
       }
       
-      commandProcessed = true;
-    }
-
-    // Generate program templates command
-    if (transcript.match(commands.multiplicationProgram) && !commandProcessed) {
-      setCurrentProgram('multiplication');
-      setCode(programTemplates[language].multiplication);
-      toast({
-        title: "Program Generated",
-        description: "Created multiplication program template",
-      });
-      commandProcessed = true;
-    }
-    
-    if (transcript.match(commands.divisionProgram) && !commandProcessed) {
-      setCurrentProgram('division');
-      setCode(programTemplates[language].division);
-      toast({
-        title: "Program Generated",
-        description: "Created division program template",
-      });
-      commandProcessed = true;
-    }
-    
-    if (transcript.match(commands.leapYearProgram) && !commandProcessed) {
-      setCurrentProgram('leapYear');
-      setCode(programTemplates[language].leapYear);
-      toast({
-        title: "Program Generated",
-        description: "Created leap year checker program template",
-      });
-      commandProcessed = true;
-    }
-
-    if (transcript.match(commands.evenOddProgram) && !commandProcessed) {
-      setCurrentProgram('evenOdd');
-      setCode(programTemplates[language].evenOdd);
-      toast({
-        title: "Program Generated",
-        description: "Created even or odd program template",
-      });
-      commandProcessed = true;
-    }
-    
-    if (transcript.match(commands.primeNumberProgram) && !commandProcessed) {
-      setCurrentProgram('primeNumber');
-      setCode(programTemplates[language].primeNumber);
-      toast({
-        title: "Program Generated",
-        description: "Created prime number checker program template",
-      });
-      commandProcessed = true;
-    }
-
-    // Help command
-    if (transcript.match(commands.help) && !commandProcessed) {
-      toast({
-        title: "Available Commands",
-        description: `
-          - "Create variable [name] equal to [value]"
-          - "Create function [name]"
-          - "Print [value]"
-          - "Run code"
-          - "Clear code"
-          - "Set [variable] to [value]"
-          - "First number is [value]"
-          - "Second number is [value]"
-          - "Write a program on multiplication of two numbers"
-          - "Write a program on division of two numbers"
-          - "Write a program on leap year"
-          - "Write a program on even or odd"
-          - "Write a program on prime number"
-        `,
-        duration: 5000,
-      });
-      commandProcessed = true;
-    }
-
-    if (commandProcessed) {
-      resetTranscript();
-    }
-  }, [transcript, code, toast, resetTranscript, language, currentProgram]);
-
-  const executeCode = () => {
-    try {
-      // For sum program
-      const originalConsoleLog = console.log;
-      let outputText = "";
-      
-      // Override console.log to capture output
-      console.log = (...args) => {
-        const output = args.map(arg => 
-          typeof arg === 'object' ? JSON.stringify(arg) : arg
-        ).join(' ');
-        outputText += output + '\n';
-        originalConsoleLog(...args);
-      };
-      
-      // Only attempt to execute JavaScript code
-      if (language === 'javascript') {
-        // Execute the code
-        // eslint-disable-next-line no-new-func
-        new Function(code)();
-      } else {
-        // For non-JavaScript languages, just show a simulation message
-        outputText = `Simulating execution in ${language}...\n\n`;
-        
-        // Extract expected outputs from the code based on language
-        if (language === 'python') {
-          const printMatches = code.match(/print\(f?"(.+?)"\)/g);
-          if (printMatches) {
-            printMatches.forEach(match => {
-              // Very simple simulation - extract the print string
-              const content = match.match(/print\(f?"(.+?)"\)/);
-              if (content && content[1]) {
-                // Basic replacement of Python f-string variables
-                let output = content[1].replace(/{(.+?)}/g, (_, varName) => {
-                  // Try to find the variable value from the code
-                  const varMatch = code.match(new RegExp(`${varName.trim()}\\s*=\\s*([0-9]+)`));
-                  return varMatch ? varMatch[1] : `{${varName}}`;
-                });
-                outputText += output + '\n';
-              }
-            });
-          }
-        } else if (language === 'c' || language === 'java') {
-          // Very simplified simulation
-          if (currentProgram === 'multiplication') {
-            // Extract values from code
-            const num1Match = code.match(/(?:int|float|double)\s+num1\s*=\s*(\d+)/);
-            const num2Match = code.match(/(?:int|float|double)\s+num2\s*=\s*(\d+)/);
-            const num1 = num1Match ? parseInt(num1Match[1]) : 0;
-            const num2 = num2Match ? parseInt(num2Match[1]) : 0;
-            outputText += `${num1} × ${num2} = ${num1 * num2}\n`;
-          } else if (currentProgram === 'division') {
-            const num1Match = code.match(/(?:int|float|double)\s+num1\s*=\s*(\d+)/);
-            const num2Match = code.match(/(?:int|float|double)\s+num2\s*=\s*(\d+)/);
-            const num1 = num1Match ? parseInt(num1Match[1]) : 0;
-            const num2 = num2Match ? parseInt(num2Match[1]) : 1;
-            outputText += num2 === 0 
-              ? "Error: Division by zero is not allowed\n"
-              : `${num1} ÷ ${num2} = ${num1 / num2}\n`;
-          } else if (currentProgram === 'leapYear') {
-            const yearMatch = code.match(/(?:int)\s+year\s*=\s*(\d+)/);
-            const year = yearMatch ? parseInt(yearMatch[1]) : 2024;
-            const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-            outputText += isLeapYear 
-              ? `${year} is a leap year\n`
-              : `${year} is not a leap year\n`;
-          } else if (currentProgram === 'evenOdd') {
-            const numMatch = code.match(/(?:int)\s+number\s*=\s*(\d+)/);
-            const number = numMatch ? parseInt(numMatch[1]) : 0;
-            const isEven = number % 2 === 0;
-            outputText += `${number} is ${isEven ? 'even' : 'odd'}\n`;
-          } else if (currentProgram === 'primeNumber') {
-            const numMatch = code.match(/(?:int)\s+number\s*=\s*(\d+)/);
-            const number = numMatch ? parseInt(numMatch[1]) : 7;
-            
-            // Simple prime check
-            let isPrime = number > 1;
-            for(let i = 2; i * i <= number; i++) {
-              if(number % i === 0) {
-                isPrime = false;
-                break;
-              }
-            }
-            
-            outputText += isPrime 
-              ? `${number} is a prime number\n`
-              : `${number} is not a prime number\n`;
-          }
-        }
-      }
-      
-      // Restore console.log
-      console.log = originalConsoleLog;
-      
-      setOutput(outputText || "Code executed successfully with no output.");
-      setActiveTab("output");
-      
-      // Show confetti for successful execution
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      
-      toast({
-        title: "Code Executed",
-        description: "Your code ran successfully!",
-      });
-    } catch (error) {
-      setOutput(`Error: ${error.message}`);
-      setActiveTab("output");
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
-  const handleLanguageChange = (value) => {
-    setLanguage(value);
-    
-    // If there's a current program template, update the code accordingly
-    if (currentProgram) {
-      setCode(programTemplates[value][currentProgram]);
-    }
-  };
-
-  return (
-    <Card className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Voice Coding Studio</h2>
-        <div className="flex gap-2">
-          <Select 
-            value={language} 
-            onValueChange={handleLanguageChange}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Language" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="javascript">JavaScript</SelectItem>
-              <SelectItem value="python">Python</SelectItem>
-              <SelectItem value="c">C</SelectItem>
-              <SelectItem value="java">Java</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button
-            onClick={toggleListening}
-            variant={isListening ? "destructive" : "default"}
-          >
-            {isListening ? "Stop Listening" : "Start Voice Commands"}
-          </Button>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <p className="text-gray-600">
-          Use voice commands to write code. Try saying:
-        </p>
-        <ul className="list-disc pl-5 text-sm text-gray-600">
-          <li>"Write a program on multiplication of two numbers"</li>
-          <li>"Write a program on division of two numbers"</li>
-          <li>"Write a program on leap year"</li>
-          <li>"Write a program on even or odd"</li>
-          <li>"Write a program on prime number"</li>
-          <li>"First number is 10" (to set first number)</li>
-          <li>"Second number is 20" (to set second number)</li>
-          <li>"Run code"</li>
-        </ul>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="mb-2">
-          <TabsTrigger value="editor">Code Editor</TabsTrigger>
-          <TabsTrigger value="output">Output</TabsTrigger>
-        </TabsList>
-        <TabsContent value="editor">
-          <textarea
-            value={code}
-            onChange={handleCodeChange}
-            style={editorStyles}
-            placeholder="// Your code will appear here as you speak commands"
-          />
-        </TabsContent>
-        <TabsContent value="output">
-          <div style={outputStyles}>
-            <pre>{output}</pre>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="flex justify-end mt-4 space-x-2">
-        <Button variant="outline" onClick={() => {
-          setCode("");
-          setOutput("");
-        }}>
-          Clear Code
-        </Button>
-        <Button onClick={executeCode}>Run Code</Button>
-      </div>
-
-      {isListening && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-md">
-          <p className="text-sm text-blue-800">
-            <strong>Listening:</strong> {transcript}
-          </p>
-        </div>
-      )}
-    </Card>
-  );
-};
+      commandProcessed
